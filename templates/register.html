@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <link rel="stylesheet" href="register.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&family=Concert+One&family=Jua&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="register-container">
+        <img class="background-image" src="https://placehold.co/1270x1185" alt="Background" />
+        <div class="logo">capybara</div>
+        
+        <form method="POST" action="/register">
+            <input type="text" class="input-field username-field" placeholder="User Name" required>
+            <input type="password" class="input-field password-field" placeholder="Password" required>
+            <input type="password" class="input-field confirm-field" placeholder="Confirm" required>
+            <input type="email" class="input-field email-field" placeholder="Email" required>
+            
+            <img class="captcha-image" src="https://placehold.co/570x134" alt="Captcha" />
+            
+            <button type="submit" class="register-button">
+                <span class="register-text">Register</span>
+            </button>
+        </form>
+    </div>
+</body>
+</html>
