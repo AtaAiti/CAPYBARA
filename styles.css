@@ -1,0 +1,54 @@
+body {
+    
+}
+
+.container {
+    text-align: center;
+    background: #3A5F3A;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.logo img {
+    width: 100px;
+}
+
+h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+}
+
+.captcha {
+    margin: 10px 0;
+}
+
+button {
+    width: 85%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+.login-btn {
+    background-color: #FFB74D;
+}
+
+.signup-btn {
+    background-color: #FFD54F;
+}
+
+.version {
+    font-size: 12px;
+    margin-top: 10px;
+}
