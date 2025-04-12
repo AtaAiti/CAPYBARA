@@ -12,7 +12,7 @@
   <div class="app">
     <!-- Menu button and Profile picture -->
     <img src="capybara-logo.png" alt="Profile" class="profile-pic">
-    <div class="menu-button">
+    <div class="menu-button" id="settingsButton" title="Open Settings">
       <div class="menu-line"></div>
       <div class="menu-line"></div>
       <div class="menu-line"></div>
@@ -143,6 +143,7 @@
       
       <!-- Chat messages -->
       <div class="chat-window">
+        <button class="status-circle" aria-label="User Status" title="more"></button>
         <div class="chat-messages">
           <div class="date-label">03.03.2025</div>
           
@@ -185,16 +186,65 @@
         </div>
         
         <div class="input-box">
-            <input type="text" placeholder="Type a message..." />
-            <button type="button" class="send-button">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#306748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-            </button>
+          <div class="options-container">
+              <button type="button" class="options-button">
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+              </button>
+              
+              <!-- Всплывающее меню (по умолчанию скрыто) -->
+              <div class="options-menu" id="optionsMenu">
+                  <button class="option-btn">Pictures</button>
+                  <button class="option-btn">Videos</button>
+              </div>
           </div>
+          
+          <input type="text" placeholder="Type a message..." />
+          <button type="button" class="send-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#306748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+          </button>
+        </div>
       </div>
     </div>
   </div>
+
+  <script>
+    // Обработчик клика по кнопке меню
+    document.getElementById('settingsButton').addEventListener('click', function() {
+      // Переход на страницу настроек
+      window.location.href = 'settings.html';
+    });
+    // Код для управления выпадающим меню с опциями
+  document.querySelector('.options-button').addEventListener('click', function(event) {
+    const menu = document.getElementById('optionsMenu');
+    menu.classList.toggle('visible');
+    event.stopPropagation(); // Предотвращаем "всплытие" события
+  });
+  
+  // Закрытие меню при клике в любом месте документа
+  document.addEventListener('click', function(event) {
+    const menu = document.getElementById('optionsMenu');
+    if (menu.classList.contains('visible')) {
+      menu.classList.remove('visible');
+    }
+  });
+  
+  // Предотвращаем закрытие меню при клике на самом меню
+  document.querySelector('.options-menu').addEventListener('click', function(event) {
+    event.stopPropagation();
+  });
+  
+  // Обработчики для кнопок "Pictures" и "Videos"
+  document.querySelectorAll('.option-btn').forEach(function(button) {
+    button.addEventListener('click', function() {
+      alert('Выбрана опция: ' + this.textContent);
+      // Здесь можно добавить логику для загрузки изображений или видео
+    });
+  });
+  </script>
 </body>
 </html>

@@ -20,5 +20,29 @@
     </div>
     <div class="title-text">Settings</div>
   </div>
+  <script>
+    // Обработчик для кнопки "Back" - возврат на страницу чата
+    document.querySelector('.back-btn').addEventListener('click', function() {
+      window.location.href = 'chat.html';
+    });
+    
+    // Обработчики для других кнопок (если нужны)
+    document.querySelector('.profile-btn').addEventListener('click', function() {
+      const rightPanel = document.querySelector('.right-panel');
+      // Загрузка содержимого myprofile.html в правую панель
+      fetch('myprofile.html')
+        .then(response => response.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(html, 'text/html');
+          const content = doc.querySelector('body').innerHTML;
+          rightPanel.innerHTML = content;
+        })
+        .catch(error => {
+          console.error('Error loading profile:', error);
+          rightPanel.innerHTML = '<div class="error">Failed to load profile</div>';
+        });
+    });
+  </script>
 </body>
 </html>

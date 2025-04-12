@@ -1,0 +1,68 @@
+html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GroupInfoAdmin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../templates/CSSfiles/groupinfoadmin.css">
+</head>
+<body>
+  <div class="container">
+    <img class="background-image" src="https://placehold.co/849x792" alt="Background" />
+    
+    <!-- Верхняя панель с аватаром и карандашом -->
+    <div class="top-panel">
+      <!-- Аватар группы (слева сверху) -->
+      <img class="group-avatar-top" src="https://placehold.co/90x90" alt="Group avatar" />
+      
+      <!-- Кнопка редактирования (справа сверху) -->
+      <button class="edit-button">
+        <svg class="edit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+          <path fill="none" stroke="#ffffff" stroke-width="2" d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+        </svg>
+      </button>
+    </div>
+    
+    <!-- Кнопка "Назад" -->
+    <button class="back-button">
+      <div class="back-icon"></div>
+    </button>
+    
+    <!-- Заголовок группы -->
+    <div class="group-header">
+      <div class="group-title">AIT24</div>
+      <div class="group-subtitle">Group: 60 members</div>
+    </div>
+    
+    <!-- Центральный аватар группы (теперь это большая версия) -->
+    <img class="group-avatar" src="https://placehold.co/149x149" alt="Group avatar" />
+    
+    <!-- Раздел участников -->
+    <div class="members-section">
+      <div class="members-title">members:</div>
+      <div class="members-list">
+        <!-- Участники остаются без изменений -->
+        <div class="member-item">
+          <img class="member-avatar" src="https://placehold.co/35x35" alt="Dair" />
+          <div class="member-name">Dair</div>
+        </div>
+        
+        <!-- Остальные участники... -->
+      </div>
+    </div>
+    
+    <!-- Кнопки администратора -->
+    <div class="admin-controls">
+      <div class="admin-button">
+        <div class="admin-button-text">+Add member</div>
+      </div>
+      
+      <div class="admin-button">
+        <div class="admin-button-text">Delete group</div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

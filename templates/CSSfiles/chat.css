@@ -13,7 +13,7 @@ body {
   }
   
   /* Top search bar */
-.search-container {
+ .search-container {
     display: flex;
     padding: 10px;
     justify-content: center;
@@ -157,6 +157,34 @@ body {
     margin-right: 7px;
     display: flex;
     flex-direction: column;
+    position: relative; /* Если еще не задано */
+  }
+
+  .status-circle {
+    width: 35px;
+    height: 35px;
+    background: #FDD367;
+    border-radius: 9999px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    border: none; /* Убираем стандартную границу кнопки */
+    padding: 0; /* Убираем стандартный отступ кнопки */
+    cursor: pointer; /* Курсор-указатель для обозначения интерактивности */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  /* Эффект при наведении */
+  .status-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Эффект при нажатии */
+  .status-circle:active {
+    transform: scale(0.95);
   }
   
   .chat-messages {
@@ -231,12 +259,22 @@ body {
   }
   
   .menu-button {
+    cursor: pointer;
+    transition: transform 0.2s;
     position: absolute;
     top: 14px;
     right: 16px;
     display: flex;
     flex-direction: column;
     gap: 4px;
+  }
+
+  .menu-button:hover {
+    opacity: 0.8;
+  }
+  
+  .menu-button:active {
+    transform: scale(0.95);
   }
   
   .menu-line {
@@ -297,3 +335,79 @@ body {
   .send-button:active {
     background-color: #ffb81d;
   }
+
+  .options-container {
+    position: relative;
+  }
+
+  /* Стили для кнопки с тремя точками */
+.options-button {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin-right: 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.options-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: #306748;
+  border-radius: 50%;
+  margin: 2px 0;
+}
+
+/* Стили для выпадающего меню */
+.options-menu {
+  width: 190px;
+  height: 86px;
+  background: #306748;
+  border-radius: 40px;
+  position: absolute;
+  bottom: 45px;
+  left: -80px;
+  display: none; /* По умолчанию скрыто */
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  animation: fadeIn 0.2s ease-in-out;
+  padding: 5px 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.options-menu.visible {
+  display: flex;
+}
+/* Стили для кнопок внутри меню */
+.option-btn {
+  background: transparent;
+  border: none;
+  color: #FDD367;
+  font-size: 24px;
+  font-family: 'Konkhmer Sleokchher', cursive;
+  padding: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.option-btn:hover {
+  background-color: rgba(253, 211, 103, 0.1);
+}
