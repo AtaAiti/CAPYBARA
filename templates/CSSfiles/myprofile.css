@@ -1,0 +1,189 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Konkhmer Sleokchher', cursive;
+  }
+  
+  .container {
+    width: 745px;
+    height: 966px;
+    position: relative;
+    font-family: 'Konkhmer Sleokchher', cursive;
+  }
+  
+  .main-background {
+    width: 745px;
+    height: 966px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    background: #FDD367;
+    border-radius: 70px;
+    border: 3px black solid;
+  }
+  
+  .background-image {
+    width: 745px;
+    height: 700px;
+    left: 0px;
+    top: 152px;
+    position: absolute;
+    opacity: 0.08;
+    border-radius: 70px;
+  }
+  
+  .title {
+    width: 400px;
+    height: 70px;
+    position: absolute;
+    text-align: center;
+    color: #76536B;
+    font-size: 72px;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    font-weight: 400;
+    word-wrap: break-word;
+    top: 30px;
+    left: 170px;
+  }
+  
+  .profile-pic-container {
+    position: absolute;
+    top: 140px;
+    left: 270px;
+  }
+  
+  .profile-pic {
+    width: 210px;
+    height: 210px;
+    border-radius: 100px;
+  }
+  
+  .field-label {
+    position: absolute;
+    text-align: center;
+    color: #76536B;
+    font-size: 18px;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    font-weight: 400;
+    word-wrap: break-word;
+    left: 100px;
+  }
+  
+  .field-value {
+    position: absolute;
+    text-align: center;
+    color: #76536B;
+    font-size: 40px;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    font-weight: 400;
+    word-wrap: break-word;
+    left: 100px;
+  }
+  
+  .nickname-label {
+    width: 100px;
+    height: 25px;
+    top: 340px;
+  }
+  
+  .nickname-value {
+    width: 150px;
+    height: 50px;
+    top: 365px;
+    left: 80px;
+  }
+  
+  .name-label {
+    width: 100px;
+    height: 25px;
+    top: 425px;
+    left: 80px;
+  }
+  
+  .name-value {
+    width: 500px;
+    height: 50px;
+    top: 450px;
+    left: 5px;
+  }
+  
+  .password-label {
+    width: 100px;
+    height: 25px;
+    top: 510px;
+    left: 100px;
+  }
+  
+  .password-value {
+    width: 400px;
+    height: 50px;
+    top: 535px;
+    left: 80px;
+  }
+  
+  .dob-label {
+    width: 120px;
+    height: 25px;
+    top: 595px;
+  }
+  
+  .dob-value {
+    width: 500px;
+    height: 50px;
+    top: 620px;
+    left: 50px;
+  }
+  
+  .bio-label {
+    width: 100px;
+    height: 25px;
+    top: 680px;
+    left: 70px;
+  }
+  
+  .bio-value {
+    width: 300px;
+    height: 50px;
+    top: 705px;
+    left: 50px;
+  }
+  
+  .email-label {
+    width: 80px;
+    height: 25px;
+    top: 765px;
+  }
+  
+  .email-value {
+    width: 545px;
+    height: 50px;
+    top: 790px;
+    text-align: left;
+    font-size: 36px;
+    text-decoration: underline;
+  }
+  
+
+  .change-button {
+    position: absolute;
+    top: 300px;
+    right: 40px;
+    background: transparent;
+    border: none;
+    color: #76536B;
+    font-size: 36px;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    cursor: pointer;
+    z-index: 2;
+    padding: 10px 15px;
+    transition: transform 0.2s;
+  }
+
+  .change-button:hover {
+    transform: scale(1.05);
+  }
+
+  .change-button:active {
+    transform: scale(0.95);
+  }
+ 
