@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,18 +15,20 @@
     <h1>CAPYBARA</h1>
 
     <form method="POST" action="/login">
-      <input type="text" name="username" placeholder="User Name or Email" class="input" required />
-      <input type="password" name="password" placeholder="Password" class="input" required />
+      <div class="login-form">
+        <input type="text" name="username" placeholder="User Name or Email" class="input" required />
+        <input type="password" name="password" placeholder="Password" class="input" required />
 
-      <div class="captcha">
-        <img src="https://www.google.com/recaptcha/api2/logo_48.png" alt="captcha">
-        <p>I'm not a robot</p>
+        <div class="captcha">
+          <img src="https://www.google.com/recaptcha/api2/logo_48.png" alt="captcha">
+          <p>I'm not a robot</p>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+        <button type="button" class="register-btn" onclick="window.location.href='register.html'">new here?</button>
       </div>
-
-      <button type="submit" class="login-btn">Login</button>
     </form>
-    
-    <button type="button" class="register-btn" onclick="window.location.href='register.html'">new here?</button>
+  
     <div class="version">0.0.1</div>
   </div>
 </body>

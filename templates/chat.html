@@ -147,41 +147,82 @@
         <div class="chat-messages">
           <div class="date-label">03.03.2025</div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-start;">
-            <div class="message sent">Hi</div>
-            <div class="message-time">16:04</div>
+          <!-- Наше сообщение - время слева -->
+          <div class="message-container sent-container">
+            <div class="message sent">
+              Hi
+              <div class="message-footer">
+                <span class="read-status read">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
+                    <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
           </div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-end;">
-            <div class="message received">Hello</div>
-            <div class="message-time">16:04</div>
+          <!-- Чужое сообщение - время справа -->
+          <div class="message-container received-container">
+            <div class="message received">
+              Hello
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
           </div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-end;">
-            <div class="message received">Blabla</div>
-            <div class="message-time">16:05</div>
+          <div class="message-container received-container">
+            <div class="message received">
+              Blabla
+              <div class="message-footer">
+                <span class="message-time">16:05</span>
+              </div>
+            </div>
           </div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-end;">
-            <div class="message received">blabla</div>
-            <div class="message-time">16:06</div>
+          <div class="message-container received-container">
+            <div class="message received">
+              blabla
+              <div class="message-footer">
+                <span class="message-time">16:06</span>
+              </div>
+            </div>
           </div>
           
           <div class="date-label">23.04.2025</div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-end;">
-            <div class="message received">Hello</div>
-            <div class="message-time">16:04</div>
+          <div class="message-container received-container">
+            <div class="message received">
+              Hello
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
           </div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-end;">
-            <div class="message received">Blabla?</div>
-            <div class="message-time">16:04</div>
+          <div class="message-container received-container">
+            <div class="message received">
+              Blabla?
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
           </div>
           
-          <div style="display: flex; flex-direction: column; align-items: flex-start;">
-            <div class="message sent">Bla!</div>
-            <div class="message-time">16:04</div>
+          <!-- Наши сообщения - непрочитанное -->
+          <div class="message-container sent-container">
+            <div class="message sent">
+              Bla!
+              <div class="message-footer">
+                <span class="read-status unread">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
+                    <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="message-time">16:05</span>
+              </div>
+            </div>
           </div>
         </div>
         

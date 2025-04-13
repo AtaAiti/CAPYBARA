@@ -200,36 +200,99 @@ body {
     margin: 15px 0;
   }
   
-  .message {
-    margin: 8px 0;
-    padding: 8px 15px;
-    border-radius: 25px;
-    position: relative;
-    width: fit-content;
-    max-width: 60%;
+  /* Общий контейнер для сообщений */
+  .message-container {
+    display: flex;
+    margin-bottom: 8px;
+    width: 100%;
   }
-  
-  .message.sent {
-    background-color: #94CCF0;
-    align-self: flex-start;
-    margin-left: 10px;
-    color: #76536B;
-    font-size: 24px;
+
+  /* Контейнер для отправленных (наших) сообщений */
+  .sent-container {
+    justify-content: flex-end;
   }
-  
-  .message.received {
-    background-color: #94F0D3;
-    align-self: flex-end;
-    margin-right: 10px;
-    color: #76536B;
-    font-size: 24px;
+
+  /* Контейнер для полученных сообщений */
+  .received-container {
+    justify-content: flex-start;
   }
-  
+
+  /* Базовый стиль для времени */
   .message-time {
-    font-size: 12px;
-    color: #1D3557;
-    text-align: right;
-    margin-top: 2px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  /* Индикаторы прочтения в стиле WhatsApp */
+  .read-status {
+    display: flex;
+    align-items: center;
+    height: 11px; /* Фиксированная высота для SVG */
+  }
+
+  /* Стиль для прочитанных сообщений (две галочки) */
+  .read-status.read {
+    position: relative;
+    color: #4FC3F7; /* Голубой цвет как в WhatsApp */
+  }
+  .read-status.read svg {
+    width: 16px;
+    height: 11px;
+  }
+
+  /* Стиль для непрочитанных сообщений (одна галочка) */
+  .read-status.unread {
+    color: rgba(255, 255, 255, 0.7);
+  }
+  .read-status.unread svg {
+    width: 14px;
+    height: 11px;
+  }
+
+  /* Время для отправленных (наших) сообщений - слева */
+  .sent-time {
+    left: 10px;
+  }
+
+  /* Время для полученных сообщений - справа */
+  .received-time {
+    right: 10px;
+  }
+
+  /* Сами сообщения */
+  .message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 70%;
+    word-wrap: break-word;
+    position: relative;
+    padding-bottom: 25px; /* Место для галочек и времени */
+  }
+
+  .sent {
+    background: #306748;
+    color: white;
+    align-self: flex-end;
+  }
+
+  .received {
+    background: #E5974F;
+    color: white;
+    align-self: flex-start;
+  }
+
+  .message-footer {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  /* Для наших сообщений - справа */
+  .sent .message-footer {
+    right: 10px;
   }
   
   .input-box {
@@ -284,18 +347,6 @@ body {
     border-radius: 10px;
   }
   
-  /* Message container styles */
-  .message-container-sent {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  
-  .message-container-received {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-  }
   .input-box {
     padding: 8px;
     background-color: #F0FAEF;
