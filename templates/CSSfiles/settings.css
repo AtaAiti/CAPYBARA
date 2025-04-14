@@ -107,14 +107,26 @@ html, body {
     cursor: pointer;
   }
   
+    /* Стили для правой панели */
+    /* Обновленные стили для правой панели */
   .right-panel {
-    width: 745px;
-    height: 740px;
-    left: 780px;
-    top: 3px;
     position: absolute;
-    background: #F0FAEF;
-    border-radius: 70px;
+    top: 0;
+    right: 0;
+    width: 50%; /* Меньшая ширина, чтобы не закрывать кнопки */
+    height: 100%;
+    background-color: #FDD367; /* Желтый фон */
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    display: none; /* По умолчанию скрыта */
+    z-index: 5; /* Убедимся, что панель не перекрывает кнопки */
+    border-radius: 20px 0 0 20px;
+    margin-left: 250px; /* Оставляем место для кнопок */
+  }
+  
+  /* Видимость правой панели */
+  .right-panel.visible {
+    display: block;
   }
   
   .profile-pic-container {

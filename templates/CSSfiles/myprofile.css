@@ -6,27 +6,27 @@ body {
   
   .container {
     width: 745px;
-    height: 966px;
+    height: 800px;
     position: relative;
     font-family: 'Konkhmer Sleokchher', cursive;
   }
   
   .main-background {
     width: 745px;
-    height: 966px;
+    height: 800px;
     left: 0px;
     top: 0px;
     position: absolute;
     background: #FDD367;
     border-radius: 70px;
-    border: 3px black solid;
+    border: none;
   }
   
   .background-image {
     width: 745px;
-    height: 700px;
+    height: 600px;
     left: 0px;
-    top: 152px;
+    top: 120px;
     position: absolute;
     opacity: 0.08;
     border-radius: 70px;
@@ -38,23 +38,23 @@ body {
     position: absolute;
     text-align: center;
     color: #76536B;
-    font-size: 72px;
+    font-size: 60px;
     font-family: 'Konkhmer Sleokchher', cursive;
     font-weight: 400;
     word-wrap: break-word;
-    top: 30px;
+    top: 20px;
     left: 170px;
   }
   
   .profile-pic-container {
     position: absolute;
-    top: 140px;
+    top: 100px;
     left: 270px;
   }
   
   .profile-pic {
-    width: 210px;
-    height: 210px;
+    width: 200px;
+    height: 200px;
     border-radius: 100px;
   }
   
@@ -62,7 +62,7 @@ body {
     position: absolute;
     text-align: center;
     color: #76536B;
-    font-size: 18px;
+    font-size: 16px;
     font-family: 'Konkhmer Sleokchher', cursive;
     font-weight: 400;
     word-wrap: break-word;
@@ -73,7 +73,7 @@ body {
     position: absolute;
     text-align: center;
     color: #76536B;
-    font-size: 40px;
+    font-size: 34px;
     font-family: 'Konkhmer Sleokchher', cursive;
     font-weight: 400;
     word-wrap: break-word;
@@ -83,90 +83,92 @@ body {
   .nickname-label {
     width: 100px;
     height: 25px;
-    top: 340px;
+    top: 280px;
   }
   
   .nickname-value {
     width: 150px;
     height: 50px;
-    top: 365px;
+    top: 305px;
     left: 80px;
   }
   
   .name-label {
     width: 100px;
     height: 25px;
-    top: 425px;
+    top: 350px;
     left: 80px;
   }
   
   .name-value {
     width: 500px;
     height: 50px;
-    top: 450px;
-    left: 5px;
+    top: 375px;
+    left: 0px;
   }
   
   .password-label {
     width: 100px;
     height: 25px;
-    top: 510px;
+    top: 420px;
     left: 100px;
   }
   
   .password-value {
     width: 400px;
     height: 50px;
-    top: 535px;
-    left: 80px;
+    top: 445px;
+    left: 60px;
   }
   
   .dob-label {
     width: 120px;
     height: 25px;
-    top: 595px;
+    top: 490px;
   }
   
   .dob-value {
     width: 500px;
     height: 50px;
-    top: 620px;
-    left: 50px;
+    top: 515px;
+    left: 30px;
   }
   
   .bio-label {
     width: 100px;
     height: 25px;
-    top: 680px;
-    left: 70px;
+    top: 560px;
+    left: 80px;
   }
   
   .bio-value {
     width: 300px;
     height: 50px;
-    top: 705px;
+    top: 585px;
     left: 50px;
   }
   
   .email-label {
     width: 80px;
     height: 25px;
-    top: 765px;
+    top: 630px;
+    left: 110px;
   }
   
   .email-value {
     width: 545px;
     height: 50px;
-    top: 790px;
+    top: 655px;
     text-align: left;
-    font-size: 36px;
+    font-size: 32px;
     text-decoration: underline;
+    left: 120px;
   }
   
 
   .change-button {
     position: absolute;
-    top: 300px;
+    top: 250px;
     right: 40px;
     background: transparent;
     border: none;
