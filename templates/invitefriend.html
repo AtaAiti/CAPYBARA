@@ -27,5 +27,89 @@
       <span class="add-text">Add</span>
     </button>
   </div>
+    <script>
+      document.querySelector('.add-button').addEventListener('click', function() {
+        // Получаем введенное значение
+        const inputField = document.querySelector('.input-field');
+        const friendNameOrEmail = inputField.value.trim();
+      
+        if (friendNameOrEmail) {
+          // Создаем эффект нажатия
+          this.style.transform = 'scale(0.95)';
+        
+          // Показываем уведомление об успешном добавлении
+          const container = document.querySelector('.container');
+          const notification = document.createElement('div');
+          notification.className = 'notification';
+          notification.textContent = 'Invitation sent to ' + friendNameOrEmail;
+          notification.style.position = 'absolute';
+          notification.style.bottom = '100px';
+          notification.style.left = '0';
+          notification.style.right = '0';
+          notification.style.margin = '0 auto';
+          notification.style.width = '80%';
+          notification.style.backgroundColor = '#28983D';
+          notification.style.color = 'white';
+          notification.style.padding = '10px 20px';
+          notification.style.borderRadius = '20px';
+          notification.style.textAlign = 'center';
+          notification.style.zIndex = '5';
+          notification.style.opacity = '0';
+          notification.style.transition = 'opacity 0.3s';
+        
+          container.appendChild(notification);
+        
+          // Показываем уведомление
+          setTimeout(() => {
+            notification.style.opacity = '1';
+          }, 10);
+        
+          // Очищаем поле ввода
+          inputField.value = '';
+        
+          // Возвращаем кнопку в нормальное состояние
+          setTimeout(() => {
+            this.style.transform = 'scale(1)';
+          }, 150);
+        
+          // Скрываем уведомление через 3 секунды
+          setTimeout(() => {
+            notification.style.opacity = '0';
+            setTimeout(() => {
+              container.removeChild(notification);
+            }, 300);
+          }, 3000);
+        } else {
+          // Показываем эффект ошибки, если поле пустое
+          inputField.style.border = '3px solid red';
+          inputField.placeholder = 'Please enter!';
+        
+          // Возвращаем стандартный стиль через 1.5 секунды
+          setTimeout(() => {
+            inputField.style.border = '3px black solid';
+            inputField.placeholder = 'Name or Email';
+          }, 1500);
+        }
+      });
+    
+      // Добавляем CSS-анимацию для кнопки
+      const style = document.createElement('style');
+      style.textContent = `
+        .add-button {
+          transition: transform 0.15s, box-shadow 0.15s;
+        }
+      
+        .add-button:hover {
+          transform: scale(1.02);
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+      
+        .add-button:active {
+          transform: scale(0.95);
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+      `;
+      document.head.appendChild(style);
+    </script>
 </body>
 </html>

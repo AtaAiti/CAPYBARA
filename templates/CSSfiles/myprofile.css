@@ -58,112 +58,51 @@ body {
     border-radius: 100px;
   }
   
-  .field-label {
+  /* Фиксированное позиционирование для всех меток и значений */
+  .field-label, .field-value {
     position: absolute;
-    text-align: center;
-    color: #76536B;
-    font-size: 16px;
-    font-family: 'Konkhmer Sleokchher', cursive;
-    font-weight: 400;
-    word-wrap: break-word;
-    left: 100px;
-  }
-  
-  .field-value {
-    position: absolute;
-    text-align: center;
-    color: #76536B;
-    font-size: 34px;
-    font-family: 'Konkhmer Sleokchher', cursive;
-    font-weight: 400;
-    word-wrap: break-word;
-    left: 100px;
-  }
-  
-  .nickname-label {
-    width: 100px;
-    height: 25px;
-    top: 280px;
-  }
-  
-  .nickname-value {
-    width: 150px;
-    height: 50px;
-    top: 305px;
-    left: 80px;
-  }
-  
-  .name-label {
-    width: 100px;
-    height: 25px;
-    top: 350px;
-    left: 80px;
-  }
-  
-  .name-value {
-    width: 500px;
-    height: 50px;
-    top: 375px;
-    left: 0px;
-  }
-  
-  .password-label {
-    width: 100px;
-    height: 25px;
-    top: 420px;
-    left: 100px;
-  }
-  
-  .password-value {
-    width: 400px;
-    height: 50px;
-    top: 445px;
-    left: 60px;
-  }
-  
-  .dob-label {
-    width: 120px;
-    height: 25px;
-    top: 490px;
-  }
-  
-  .dob-value {
-    width: 500px;
-    height: 50px;
-    top: 515px;
-    left: 30px;
-  }
-  
-  .bio-label {
-    width: 100px;
-    height: 25px;
-    top: 560px;
-    left: 80px;
-  }
-  
-  .bio-value {
-    width: 300px;
-    height: 50px;
-    top: 585px;
-    left: 50px;
-  }
-  
-  .email-label {
-    width: 80px;
-    height: 25px;
-    top: 630px;
-    left: 110px;
-  }
-  
-  .email-value {
-    width: 545px;
-    height: 50px;
-    top: 655px;
+    left: 80px; /* Фиксированная позиция слева */
     text-align: left;
-    font-size: 32px;
-    text-decoration: underline;
-    left: 120px;
+    width: 400px; /* Зафиксированная ширина */
   }
+
+    /* Стили для подписей полей */
+  .field-label {
+    font-size: 22px; /* Увеличенный размер текста для подписей */
+    color: #5A3C52; /* Более тёмный оттенок фиолетового */
+    font-weight: bold; /* Жирный текст */
+  }
+  
+  /* Стили для значений полей */
+  .field-value {
+    font-size: 38px; /* Значительно увеличенный размер для значений */
+    color: #76536B; /* Оригинальный цвет, можно изменить */
+    font-weight: 500; /* Полужирный текст */
+  }
+
+  .field-value input {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+  }
+  
+  .nickname-label { top: 280px; }
+  .nickname-value { top: 305px; }
+  
+  .name-label { top: 350px; }
+  .name-value { top: 375px; }
+  
+  .password-label { top: 420px; }
+  .password-value { top: 445px; }
+  
+  .dob-label { top: 490px; }
+  .dob-value { top: 515px; }
+  
+  .bio-label { top: 560px; }
+  .bio-value { top: 585px; }
+  
+  .email-label { top: 630px; }
+  .email-value { top: 655px; }
   
 
   .change-button {

@@ -7,20 +7,20 @@ body {
   
   .container {
     width: 745px;
-    height: 966px;
+    height: 800px;
     position: relative;
     overflow: hidden;
   }
   
   .main-background {
     width: 745px;
-    height: 966px;
+    height: 800px;
     position: absolute;
     left: 0;
     top: 0;
     background: #9F6290;
     border-radius: 70px;
-    border: 3px black solid;
+    border: none;
     z-index: 1;
   }
   
@@ -37,33 +37,33 @@ body {
     position: relative;
     text-align: center;
     color: #76536B;
-    font-size: 96px;
-    margin-top: 30px;
+    font-size: 70px;
+    margin-top: 20px;
     z-index: 3;
   }
   
   .form-section {
     position: relative;
     width: 505px;
-    margin: 40px auto;
+    margin: 25px auto;
     z-index: 3;
   }
   
   .form-label {
-    font-size: 40px;
+    font-size: 36px;
     color: white;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     
     
   }
   
   .input-field {
     width: 100%;
-    height: 77px;
+    height: 65px;
     background: #D9D9D9;
     border-radius: 38.5px;
     border: 3px solid black;
-    font-size: 40px;
+    font-size: 36px;
     font-family: 'Konkhmer Sleokchher', cursive;
     color: #76536B;
     text-align: center;
@@ -72,10 +72,10 @@ body {
   /* Улучшенная стилизация контейнера с прокруткой */
   .friends-container {
     width: 100%;
-    max-height: 300px;
+    max-height: 230px;
     background: #D9D9D9;
-    border-radius: 50px;
-    padding: 20px 0;
+    border-radius: 40px;
+    padding: 15px 0;
     overflow-y: auto;
     border: 3px solid black;
     
@@ -135,7 +135,7 @@ body {
   .friend-item {
     display: flex;
     align-items: center;
-    padding: 10px 20px;
+    padding: 8px 20px;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     transition: background-color 0.2s;
   }
@@ -183,7 +183,7 @@ body {
   
   .friend-name {
     flex-grow: 1;
-    font-size: 36px;
+    font-size: 32px;
     text-align: left;
   }
   
@@ -198,13 +198,13 @@ body {
     position: relative;
     display: block;
     width: 505px;
-    height: 77px;
-    margin: 40px auto;
+    height: 65px;
+    margin: 25px auto;
     background: #794A6D;
     border-radius: 38.5px;
     border: none;
     color: white;
-    font-size: 48px;
+    font-size: 42px;
     font-family: 'Konkhmer Sleokchher', cursive;
     cursor: pointer;
     z-index: 3;

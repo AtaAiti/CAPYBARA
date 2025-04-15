@@ -108,20 +108,19 @@ html, body {
   }
   
     /* Стили для правой панели */
-    /* Обновленные стили для правой панели */
   .right-panel {
     position: absolute;
     top: 0;
     right: 0;
-    width: 50%; /* Меньшая ширина, чтобы не закрывать кнопки */
+    width: 50%;
     height: 100%;
-    background-color: #FDD367; /* Желтый фон */
+    background-color: #FDD367; /* Цвет по умолчанию */
     overflow-y: auto;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
-    display: none; /* По умолчанию скрыта */
-    z-index: 5; /* Убедимся, что панель не перекрывает кнопки */
+    display: none;
+    z-index: 5;
     border-radius: 20px 0 0 20px;
-    margin-left: 250px; /* Оставляем место для кнопок */
+    transition: background-color 0.5s ease; /* Плавное изменение цвета */
   }
   
   /* Видимость правой панели */
