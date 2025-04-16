@@ -6,8 +6,10 @@
   <title>Capybara Messenger</title>
   <link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/static/css/mainWindow.css">
+  <script src="https://cdn.socket.io/4.5.4/socket.io.min.js"></script>
+  <script src="/static/js/socket.js"></script>
 </head>
-<body>
+<body data-user-id="{{ current_user.id }}">
   <div class="app">
     <!-- Menu button and Profile picture -->
     <img src="capybara-logo.png" alt="Profile" class="profile-pic">
@@ -1026,23 +1028,42 @@
       const text = input.value.trim();
       
       if (text) {
-        const messagesContainer = document.querySelector('.chat-messages');
-        
-        // Проверяем, находимся ли мы в групповом чате
-        const isGroupChat = document.querySelector('.group-header') !== null;
-        
-        // Создаем сообщение в соответствии с типом чата
-        const newMessage = isGroupChat 
-          ? createGroupMessage(text, true, false) 
-          : createMessage(text, true, false);
+        const activeChat = document.querySelector('.chat-item.active');
+        if (activeChat) {
+          const chatType = activeChat.getAttribute('data-chat-type');
+          const recipientId = chatType === 'group' ? 
+            activeChat.getAttribute('data-group-id') : 
+            activeChat.getAttribute('data-user-id');
           
-        messagesContainer.appendChild(newMessage);
-        
-        // Очищаем поле ввода
-        input.value = '';
-        
-        // Прокручиваем чат вниз
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          // Get the user's ID from the page (add this as a data attribute on body)
+          const userId = document.body.getAttribute('data-user-id');
+          
+          // Join the room first (returns a Promise with roomId)
+          let roomPromise;
+          if (chatType === 'group') {
+            roomPromise = joinGroupRoom(recipientId);
+          } else {
+            roomPromise = joinPrivateRoom(userId, recipientId);
+          }
+          
+          // Once in the room, send the message
+          roomPromise.then(roomId => {
+            if (roomId) {
+              // Send message via WebSocket
+              sendMessage(text, roomId, chatType === 'group' ? 'group' : 'user', recipientId)
+                .then(() => {
+                  // Create and display message in UI (optimistic rendering)
+                  const messagesContainer = document.querySelector('.chat-messages');
+                  const newMessage = createMessage(text, true, false);
+                  messagesContainer.appendChild(newMessage);
+                  
+                  // Clear input and scroll to bottom
+                  input.value = '';
+                  messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                });
+            }
+          });
+        }
       }
     });
 
@@ -1052,61 +1073,167 @@
       const chatWindow = document.querySelector('.chat-window');
       const chatMessages = document.querySelector('.chat-messages');
       
-      // Очищаем текущие сообщения
+      // Clear messages and group header
       chatMessages.innerHTML = '';
-      
-      // Удаляем заголовок группы, если он есть
       const groupHeader = document.querySelector('.group-header');
       if (groupHeader) {
         groupHeader.remove();
       }
       
-      // Добавляем дату
-      const dateLabel = document.createElement('div');
-      dateLabel.className = 'date-label';
-      dateLabel.textContent = '14.04.2025';
-      chatMessages.appendChild(dateLabel);
+      // Show loading indicator
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.className = 'loading-indicator';
+      loadingIndicator.textContent = 'Loading messages...';
+      chatMessages.appendChild(loadingIndicator);
       
-      // Добавляем примеры личных сообщений
-      const messages = [
-        {
-          text: "Hello!",
-          isSent: false,
-          time: "14:01"
-        },
-        {
-          text: "Hi there! How are you?",
-          isSent: true,
-          isRead: true,
-          time: "14:02"
-        },
-        {
-          text: "I'm good, thanks for asking. Do you have a minute to talk about the project?",
-          isSent: false,
-          time: "14:03"
-        },
-        {
-          text: "Sure, what would you like to know?",
-          isSent: true,
-          isRead: false,
-          time: "14:05"
-        }
-      ];
+      // Get current user ID
+      const currentUserId = document.body.getAttribute('data-user-id');
       
-      // Добавляем сообщения в чат
+      // Join the room via WebSockets
+      joinPrivateRoom(currentUserId, userId).then(roomId => {
+        // Fetch message history
+        fetch(`/get_direct_messages/${userId}`)
+          .then(response => response.json())
+          .then(data => {
+            // Safely remove loading indicator
+            if (loadingIndicator.parentNode === chatMessages) {
+              chatMessages.removeChild(loadingIndicator);
+            }
+            
+            if (data.success) {
+              // Group messages by date
+              const messagesByDate = groupMessagesByDate(data.messages);
+              
+              // Display messages
+              for (const date in messagesByDate) {
+                // Add date separator
+                const dateLabel = document.createElement('div');
+                dateLabel.className = 'date-label';
+                dateLabel.textContent = date;
+                chatMessages.appendChild(dateLabel);
+                
+                // Add messages for this date
+                messagesByDate[date].forEach(msg => {
+                  const isSent = msg.sender_id == currentUserId;
+                  const message = createMessage(
+                    msg.content, 
+                    isSent, 
+                    msg.is_read || false
+                  );
+                  chatMessages.appendChild(message);
+                });
+              }
+              
+              // Scroll to bottom
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+              showNotification('Error loading messages: ' + data.message, true);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading messages:', error);
+            // Safely remove loading indicator
+            if (loadingIndicator.parentNode === chatMessages) {
+              chatMessages.removeChild(loadingIndicator);
+            }
+            showNotification('Error loading messages. Please try again.', true);
+          });
+      });
+    }
+    
+    // Helper function to group messages by date
+    function groupMessagesByDate(messages) {
+      const groups = {};
+      
       messages.forEach(msg => {
-        const messageEl = createMessage(
-          msg.text, 
-          msg.isSent, 
-          msg.isRead || false
-        );
-        chatMessages.appendChild(messageEl);
+        const date = new Date(msg.created_at);
+        const dateStr = date.toLocaleDateString();
+        
+        if (!groups[dateStr]) {
+          groups[dateStr] = [];
+        }
+        
+        groups[dateStr].push(msg);
       });
       
-      // Прокручиваем чат вниз
-      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return groups;
     }
-
+    
+    // Similarly update the loadGroupChat function
+    function loadGroupChat(groupId) {
+      const chatWindow = document.querySelector('.chat-window');
+      const chatMessages = document.querySelector('.chat-messages');
+      
+      // Clear messages and group header
+      chatMessages.innerHTML = '';
+      const groupHeader = document.querySelector('.group-header');
+      if (groupHeader) {
+        groupHeader.remove();
+      }
+      
+      // Show loading indicator
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.className = 'loading-indicator';
+      loadingIndicator.textContent = 'Loading messages...';
+      chatMessages.appendChild(loadingIndicator);
+      
+      // Get current user ID
+      const currentUserId = document.body.getAttribute('data-user-id');
+      
+      // Join the room via WebSockets
+      joinGroupRoom(groupId).then(roomId => {
+        // Fetch message history
+        fetch(`/get_group_messages/${groupId}`)
+          .then(response => response.json())
+          .then(data => {
+            // Safely remove loading indicator
+            if (loadingIndicator.parentNode === chatMessages) {
+              chatMessages.removeChild(loadingIndicator);
+            }
+            
+            if (data.success) {
+              // Group messages by date
+              const messagesByDate = groupMessagesByDate(data.messages);
+              
+              // Display messages
+              for (const date in messagesByDate) {
+                // Add date separator
+                const dateLabel = document.createElement('div');
+                dateLabel.className = 'date-label';
+                dateLabel.textContent = date;
+                chatMessages.appendChild(dateLabel);
+                
+                // Add messages for this date
+                messagesByDate[date].forEach(msg => {
+                  const isSent = msg.sender_id == currentUserId;
+                  const message = createGroupMessage(
+                    msg.content, 
+                    isSent, 
+                    msg.is_read || false,
+                    msg.sender_name || '',
+                    msg.sender_avatar || ''
+                  );
+                  chatMessages.appendChild(message);
+                });
+              }
+              
+              // Scroll to bottom
+              chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+              showNotification('Error loading messages: ' + data.message, true);
+            }
+          })
+          .catch(error => {
+            console.error('Error loading messages:', error);
+            // Safely remove loading indicator
+            if (loadingIndicator.parentNode === chatMessages) {
+              chatMessages.removeChild(loadingIndicator);
+            }
+            showNotification('Error loading messages. Please try again.', true);
+          });
+      });
+    }
+    
     // Load friends list when page loads
     document.addEventListener('DOMContentLoaded', function() {
       // Add this function call

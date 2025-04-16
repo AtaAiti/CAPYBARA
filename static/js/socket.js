@@ -1,8 +1,9 @@
-// Инициализируем socket глобально, до любых обработчиков событий
+// Increase timeout and add reconnection options
 let socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port, {
     reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000
+    reconnectionAttempts: 10,
+    reconnectionDelay: 1000,
+    timeout: 10000
 });
 
 let socketConnected = false;
@@ -40,7 +41,52 @@ document.addEventListener('DOMContentLoaded', () => {
     // Обработчик новых сообщений
     socket.on('new_message', (data) => {
         console.log('New message received:', data);
-        displayMessage(data);
+        
+        // Check if this message belongs to the currently active chat
+        const activeChat = document.querySelector('.chat-item.active');
+        if (activeChat) {
+            const chatType = activeChat.getAttribute('data-chat-type');
+            const activeChatId = chatType === 'group' ? 
+                activeChat.getAttribute('data-group-id') : 
+                activeChat.getAttribute('data-user-id');
+            
+            const messageForActiveChat = 
+                (chatType === 'group' && data.group_id == activeChatId) || 
+                (chatType === 'direct' && 
+                    ((data.sender_id == activeChatId) || (data.recipient_id == activeChatId)));
+            
+            if (messageForActiveChat) {
+                // Get current user ID to determine if this is an incoming message
+                const currentUserId = document.body.getAttribute('data-user-id');
+                const isSentByMe = data.sender_id == currentUserId;
+                
+                // Display message in the chat window
+                const messagesContainer = document.querySelector('.chat-messages');
+                
+                if (chatType === 'group') {
+                    const message = createGroupMessage(
+                        data.content,
+                        isSentByMe,
+                        false, // not read yet
+                        isSentByMe ? '' : data.sender_name,
+                        isSentByMe ? '' : data.sender_avatar
+                    );
+                    messagesContainer.appendChild(message);
+                } else {
+                    const message = createMessage(data.content, isSentByMe, false);
+                    messagesContainer.appendChild(message);
+                }
+                
+                // Scroll to bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            } else {
+                // Show notification for messages in other chats
+                showNotification(`New message from ${data.sender_name}`);
+                
+                // Update unread indicator on the chat item
+                updateChatUnreadStatus(data);
+            }
+        }
     });
     
     // Обработчик ошибок
@@ -50,24 +96,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Функция для проверки готовности сокета с поддержкой обещаний (Promise)
+// Modify the ensureSocketReady function to handle timeouts better
 function ensureSocketReady() {
     return new Promise((resolve, reject) => {
         if (socket && socketConnected) {
             resolve(socket);
-        } else {
+        } else if (socket && !socketConnected) {
+            // If socket exists but not connected, try reconnecting
+            socket.connect();
+            
+            // Listen for successful connection
             document.addEventListener('socket-ready', () => resolve(socket), { once: true });
-            // Таймаут на случай, если сокет не удастся подключить
+            
+            // Timeout after 8 seconds
             setTimeout(() => {
-                if (!socketConnected) reject(new Error('Socket connection timeout'));
-            }, 5000);
+                if (!socketConnected) {
+                    console.warn('Socket connection timed out, operating in offline mode');
+                    // Resolve anyway to prevent blocking UI, but log warning
+                    resolve(socket);
+                }
+            }, 8000);
+        } else {
+            reject(new Error('Socket not initialized'));
         }
     });
 }
 
-// Остальные функции должны использовать ensureSocketReady для гарантии подключения
+// Updated join room functions
 function joinPrivateRoom(userId, friendId) {
-    return ensureSocketReady()
+    // Add a small delay to ensure socket initialization
+    return new Promise((resolve) => setTimeout(resolve, 300))
+        .then(() => ensureSocketReady())
         .then(() => {
             const roomId = `private_${Math.min(userId, friendId)}_${Math.max(userId, friendId)}`;
             console.log(`Joining private room: ${roomId}`);
@@ -77,13 +136,15 @@ function joinPrivateRoom(userId, friendId) {
         })
         .catch(error => {
             console.error('Cannot join room:', error);
-            return null;
+            // Return a fallback room ID to allow offline-first behavior
+            return `private_${Math.min(userId, friendId)}_${Math.max(userId, friendId)}`;
         });
 }
 
-// Присоединение к комнате группового чата
+// Similarly update joinGroupRoom with the delay
 function joinGroupRoom(groupId) {
-    return ensureSocketReady()
+    return new Promise((resolve) => setTimeout(resolve, 300))
+        .then(() => ensureSocketReady())
         .then(() => {
             const roomId = `group_${groupId}`;
             console.log(`Joining group room: ${roomId}`);
@@ -156,14 +217,24 @@ function displayMessage(data) {
 }
 
 function displayStatusMessage(message) {
-    const messagesContainer = document.querySelector('.messages-container');
+    // Find the correct container - use chat-messages instead of messages-container
+    const messagesContainer = document.querySelector('.chat-messages');
     
-    const statusElement = document.createElement('div');
-    statusElement.classList.add('status-message');
-    statusElement.textContent = message;
-    
-    messagesContainer.appendChild(statusElement);
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    // Only proceed if the container exists
+    if (messagesContainer) {
+        const statusElement = document.createElement('div');
+        statusElement.classList.add('status-message');
+        statusElement.textContent = message;
+        statusElement.style.textAlign = 'center';
+        statusElement.style.padding = '5px';
+        statusElement.style.color = '#666';
+        statusElement.style.fontSize = '0.9em';
+        
+        messagesContainer.appendChild(statusElement);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    } else {
+        console.log('Status message (no display container):', message);
+    }
 }
 
 function displayErrorMessage(message) {
@@ -176,3 +247,53 @@ function formatTime(timestamp) {
     const date = new Date(timestamp);
     return date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
 }
+
+// Helper function to update unread indicators in the sidebar
+function updateChatUnreadStatus(data) {
+    let chatItem;
+    if (data.group_id) {
+        chatItem = document.querySelector(`.chat-item[data-group-id="${data.group_id}"]`);
+    } else {
+        // For direct messages, find the chat with the sender
+        chatItem = document.querySelector(`.chat-item[data-user-id="${data.sender_id}"]`);
+    }
+    
+    if (chatItem) {
+        // Add unread indicator
+        if (!chatItem.querySelector('.unread-indicator')) {
+            const indicator = document.createElement('div');
+            indicator.className = 'unread-indicator';
+            chatItem.appendChild(indicator);
+        }
+        
+        // Update time display
+        const timeElement = chatItem.querySelector('.chat-item-time');
+        if (timeElement) {
+            timeElement.textContent = formatTime(data.timestamp || new Date());
+        }
+    }
+}
+
+
+// Add this to socket.js
+function markMessageAsRead(messageId) {
+    return ensureSocketReady()
+        .then(() => {
+            socket.emit('mark_read', {message_id: messageId});
+        })
+        .catch(error => {
+            console.error('Cannot mark message as read:', error);
+        });
+}
+
+socket.on('message_read', (data) => {
+    // Update UI for read messages
+    const messageElement = document.querySelector(`.message-container[data-message-id="${data.message_id}"]`);
+    if (messageElement) {
+        const readStatus = messageElement.querySelector('.read-status');
+        if (readStatus) {
+            readStatus.classList.remove('unread');
+            readStatus.classList.add('read');
+        }
+    }
+});
