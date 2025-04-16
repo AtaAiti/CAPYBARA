@@ -20,7 +20,14 @@
     <!-- Search bar -->
     <div class="search-container">
       <input type="text" class="search-bar" placeholder="Search">
-      <button type="button" class="all-button">All</button>
+      <div class="filter-dropdown">
+        <button type="button" class="all-button" id="filterButton">All</button>
+        <div class="filter-dropdown-content" id="filterDropdown">
+          <button type="button" class="filter-option" data-filter="all">All</button>
+          <button type="button" class="filter-option" data-filter="direct">Directs</button>
+          <button type="button" class="filter-option" data-filter="group">Groups</button>
+        </div>
+      </div>
     </div>  
     
     <!-- Filter tabs -->
@@ -1402,6 +1409,101 @@
         }
       });
     });
+
+    // Add filter dropdown functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const filterButton = document.getElementById('filterButton');
+      const filterDropdown = document.getElementById('filterDropdown');
+      const filterOptions = document.querySelectorAll('.filter-option');
+      
+      // Toggle dropdown when filter button is clicked
+      filterButton.addEventListener('click', function(e) {
+        e.stopPropagation();
+        filterDropdown.classList.toggle('show');
+      });
+      
+      // Close dropdown when clicking elsewhere
+      document.addEventListener('click', function() {
+        filterDropdown.classList.remove('show');
+      });
+      
+      // Prevent dropdown from closing when clicking inside it
+      filterDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+      });
+      
+      // Handle filter option selection
+      filterOptions.forEach(option => {
+        option.addEventListener('click', function() {
+          const filterType = this.getAttribute('data-filter');
+          // Update button text
+          filterButton.textContent = this.textContent;
+          // Close dropdown
+          filterDropdown.classList.remove('show');
+          // Apply filter
+          filterChatList(filterType);
+        });
+      });
+      
+      // Function to filter the chat list
+      function filterChatList(filterType) {
+        const chatItems = document.querySelectorAll('.chat-item');
+        
+        chatItems.forEach(item => {
+          const chatType = item.getAttribute('data-chat-type');
+          
+          if (filterType === 'all') {
+            item.style.display = 'flex'; // Show all items
+          } else if (filterType === 'direct' && chatType === 'direct') {
+            item.style.display = 'flex'; // Show direct messages
+          } else if (filterType === 'group' && chatType === 'group') {
+            item.style.display = 'flex'; // Show group messages
+          } else {
+            item.style.display = 'none'; // Hide other items
+          }
+        });
+      }
+    });
   </script>
+
+  <style>
+    /* Add these styles to your CSS */
+    .filter-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .filter-dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      background-color: #f9f9f9;
+      min-width: 120px;
+      box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+      z-index: 1;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+    
+    .filter-dropdown-content.show {
+      display: block;
+    }
+    
+    .filter-option {
+      color: black;
+      padding: 12px 16px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+      border: none;
+      background: none;
+      width: 100%;
+      cursor: pointer;
+    }
+    
+    .filter-option:hover {
+      background-color: #f1f1f1;
+    }
+  </style>
 </body>
 </html>
