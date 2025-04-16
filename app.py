@@ -862,20 +862,20 @@ def get_user_groups():
 def handle_connect():
     if 'user_id' in session:
         current_user = get_current_user()
-        emit('status', {'msg': f'{current_user.name} подключился'})
+        emit('status', {'msg': f'{current_user.name} connected'})
 
 @socketio.on('disconnect')
 def handle_disconnect():
     if 'user_id' in session:
         current_user = get_current_user()
-        emit('status', {'msg': f'{current_user.name} отключился'})
+        emit('status', {'msg': f'{current_user.name} disconnected'})
 
 @socketio.on('join')
 def handle_join(data):
     room = data['room']
     join_room(room)
     current_user = get_current_user()
-    emit('status', {'msg': f'{current_user.name} присоединился к комнате {room}'}, room=room)
+    emit('status', {'msg': f'{current_user.name} joined room {room}'}, room=room)
 
 @socketio.on('leave')
 def handle_leave(data):
@@ -889,18 +889,18 @@ def handle_message(data):
     current_user = get_current_user()
     room = data.get('room')
     message_content = data.get('message')
-    recipient_type = data.get('recipient_type', 'user')  # 'user' или 'group'
+    recipient_type = data.get('recipient_type', 'user')  # 'user' or 'group'
     
     if not message_content:
         return
     
-    # Создаем новое сообщение в БД
+    # Create new message in DB
     new_message = Message(
         sender_id=current_user.id,
         content=message_content
     )
     
-    # Определяем получателя в зависимости от типа
+    # Set recipient based on type
     if recipient_type == 'user':
         recipient_id = data.get('recipient_id')
         new_message.recipient_id = recipient_id
@@ -912,18 +912,34 @@ def handle_message(data):
         db.session.add(new_message)
         db.session.commit()
         
-        # Отправляем сообщение в комнату через WebSocket
+        # Emit message to room
         emit('new_message', {
             'id': new_message.id,
             'sender_id': current_user.id,
             'sender_name': current_user.name,
+            'sender_avatar': current_user.avatar,
+            'recipient_id': new_message.recipient_id,
+            'group_id': new_message.group_id,
             'content': message_content,
-            'timestamp': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+            'timestamp': new_message.created_at.isoformat(),
+            'is_read': False
         }, room=room)
     except Exception as e:
-        db.session.rollback()
-        print(f"Error sending message: {str(e)}")
-        emit('error', {'msg': 'Ошибка при отправке сообщения'})
+        print(f"Error saving message: {e}")
+        emit('error', {'msg': 'Error sending message'}, room=request.sid)
+
+
+
+# Add corresponding server-side handler in app.py
+@socketio.on('mark_read')
+def handle_mark_read(data):
+    message_id = data.get('message_id')
+    if message_id:
+        message = Message.query.get(message_id)
+        if message:
+            message.is_read = True
+            db.session.commit()
+            emit('message_read', {'message_id': message_id}, room=f'private_{min(message.sender_id, message.recipient_id)}_{max(message.sender_id, message.recipient_id)}')
 
 # Создаем таблицы при запуске
 with app.app_context():
