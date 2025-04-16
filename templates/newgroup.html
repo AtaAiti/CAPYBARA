@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NewGroup</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/newgroup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="main-background"></div>
+    <img class="background-image" src="https://placehold.co/849x792" />
+    
+    <h1 class="title">New Group</h1>
+    
+    <div class="form-section">
+      <input type="text" class="input-field" placeholder="name group">
+    </div>
+    
+    <div class="form-section">
+      <div class="form-label">Select Friends:</div>
+      <div class="friends-container">
+        <ul class="friends-list">
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Dair</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Nurdin</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Yntymak</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Eleonora</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Alienora</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Kutman</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+          <li class="friend-item">
+            <img class="friend-avatar" src="https://placehold.co/35x35" />
+            <div class="friend-name">Zaryl</div>
+            <button class="friend-status selected" title="Click to toggle selection"></button>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <button class="create-button">Create</button>
+  </div>
+  
+  <script>
+    // Скрипт для переключения статуса друзей
+    document.querySelectorAll('.friend-status').forEach(button => {
+  // При инициализации нужно установить начальное состояние для уже не выбранных элементов
+  if (!button.classList.contains('selected')) {
+    button.classList.add('not-selected');
+  }
+  button.addEventListener('click', function() {
+    this.classList.toggle('selected');
+    this.classList.toggle('not-selected');
+  });
+ });
+  </script>
+</body>
+</html>

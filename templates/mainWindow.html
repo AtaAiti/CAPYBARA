@@ -1,918 +1,1177 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CAPYBARA Chat</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        /* Simple styles as requested */
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-        }
-        header {
-            background-color: #f5f5f5;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #ddd;
-        }
-        main {
-            display: flex;
-            flex: 1;
-        }
-        .sidebar {
-            width: 300px;
-            border-right: 1px solid #ddd;
-            display: flex;
-            flex-direction: column;
-        }
-        .chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-        .contact, .group {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            cursor: pointer;
-            border-bottom: 1px solid #eee;
-        }
-        .contact-info, .group-info {
-            margin-left: 10px;
-            flex: 1;
-        }
-        .message {
-            margin: 5px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            max-width: 70%;
-        }
-        .sent {
-            background-color: #dcf8c6; /* Зеленый фон для отправителя */
-            align-self: flex-end;
-        }
-        .received {
-            background-color: #e3f2fd; /* Синий фон для получателя */
-            align-self: flex-start;
-        }
-        .messages-container {
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-        }
-        .message-input {
-            display: flex;
-            padding: 10px;
-            border-top: 1px solid #ddd;
-        }
-        .message-input textarea {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            resize: none;
-        }
-        .send-btn {
-            margin-left: 10px;
-            background-color: orange;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            height: 36px;
-            width: 36px;
-            cursor: pointer;
-        }
-        .attach-btn {
-            margin-left: 10px;
-            background-color: green;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            height: 36px;
-            width: 36px;
-            cursor: pointer;
-        }
-        .filters {
-            display: flex;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .filter-btn {
-            margin-right: 5px;
-            padding: 5px 10px;
-            border: 1px solid #ccc;
-            border-radius: 15px;
-            cursor: pointer;
-            background-color: white;
-        }
-        .active {
-            background-color: #e3f2fd;
-        }
-        .search-bar {
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
-        .search-bar input {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 15px;
-        }
-        .chat-options {
-            color: yellow;
-            cursor: pointer;
-            font-size: 24px;
-            margin-left: 10px;
-        }
-        .settings-btn {
-            color: yellow;
-            cursor: pointer;
-            font-size: 24px;
-        }
-        .message-status {
-            font-size: 12px;
-            color: #888;
-            text-align: right;
-        }
-        .chat-actions {
-            display: flex;
-            align-items: center;
-            margin-left: 10px;
-        }
-        .action-btn {
-            margin-right: 5px;
-            padding: 2px 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #f8f8f8;
-            cursor: pointer;
-        }
-        .action-btn:hover {
-            background-color: #e0e0e0;
-        }
-        .delete-group-btn {
-            color: #f44336;
-        }
-        .add-user-btn {
-            padding: 3px 8px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .group-info-header {
-            padding: 10px;
-            font-weight: bold;
-            color: #333;
-            border-bottom: 1px solid #eee;
-        }
-        .members-list {
-            padding: 10px;
-        }
-        .member-item {
-            display: flex;
-            align-items: center;
-            padding: 8px;
-            border-bottom: 1px solid #f5f5f5;
-        }
-        .member-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .member-info {
-            flex: 1;
-        }
-        .role-badge {
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 10px;
-            margin-left: 5px;
-        }
-        .role-badge.creator {
-            background-color: #ffd700;
-            color: #333;
-        }
-        .role-badge.admin {
-            background-color: #4CAF50;
-            color: white;
-        }
-        .group-info-header {
-            padding: 15px;
-            font-weight: bold;
-            font-size: 18px;
-            color: #333;
-            border-bottom: 1px solid #ddd;
-            background-color: #f9f9f9;
-        }
-        
-        .members-list {
-            padding: 0;
-            margin: 0;
-        }
-        
-        .member-item {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            transition: background-color 0.2s;
-        }
-        
-        .member-item:hover {
-            background-color: #f5f5f5;
-        }
-        
-        .member-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            margin-right: 15px;
-            object-fit: cover;
-            border: 1px solid #eee;
-        }
-        
-        .member-info {
-            flex: 1;
-        }
-        
-        .member-name {
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .role-badge {
-            font-size: 11px;
-            padding: 3px 8px;
-            border-radius: 10px;
-            margin-left: 8px;
-            display: inline-block;
-        }
-        
-        .role-badge.creator {
-            background-color: #ffd700;
-            color: #333;
-        }
-        
-        .role-badge.admin {
-            background-color: #4CAF50;
-            color: white;
-        }
-        
-        .chat-actions {
-            display: flex;
-            align-items: center;
-            margin-left: 10px;
-        }
-        
-        .action-btn {
-            margin-right: 8px;
-            padding: 5px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #f8f8f8;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-        }
-        
-        .action-btn:hover {
-            background-color: #e0e0e0;
-        }
-        
-        .delete-group-btn {
-            color: #f44336;
-        }
-        
-        .add-member-btn::before {
-            content: "+";
-            margin-right: 4px;
-            font-weight: bold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capybara Messenger</title>
+  <link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/mainWindow.css">
 </head>
 <body>
-    <header>
-        <div class="user-info">
-            <img src="{{ current_user.avatar or url_for('static', filename='img/default-avatar.png') }}" alt="Avatar" class="avatar">
-            <span>{{ current_user.name }}</span>
-        </div>
-        <div class="actions">
-            <a href="{{ url_for('settings') }}" class="settings-btn">&#9776;</a>
-            <a href="{{ url_for('logout') }}" class="logout-btn">Выйти</a>
-        </div>
-    </header>
+  <div class="app">
+    <!-- Menu button and Profile picture -->
+    <img src="capybara-logo.png" alt="Profile" class="profile-pic">
+    <div class="menu-button" id="settingsButton" title="Open Settings">
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+    </div>
     
-    <main>
-        <section class="sidebar">
-            <!-- Chat type filters -->
-            <div class="filters">
-                <button class="filter-btn active">All</button>
-                <button class="filter-btn">Directs</button>
-                <button class="filter-btn">Groups</button>
-                
-                <div style="margin-left: auto;">
-                    <button class="filter-btn">All</button>
-                    <button class="filter-btn">Unread</button>
-                    <button class="filter-btn">Read</button>
-                </div>
-            </div>
-            
-            <!-- Search bar -->
-            <div class="search-bar">
-                <input type="text" placeholder="Search">
-            </div>
-            
-            
-            <div class="tab-content contacts active">
-                <ul class="contact-list">
-                    {% for user in friends %}
-                    <li class="contact" data-user-id="{{ user.id }}">
-                        <img src="{{ user.avatar or url_for('static', filename='img/default-avatar.png') }}" alt="Avatar" class="avatar" onerror="this.src='https://via.placeholder.com/50x50?text=User'">
-                        <div class="contact-info">
-                            <span class="name">{{ user.nickname or user.name }}</span>
-                            <div class="last-message">
-                                <span class="preview">Start a conversation</span>
-                                <span class="time"></span>
-                            </div>
-                        </div>
-                    </li>
-                    {% else %}
-                    <li class="no-contacts">No friends yet. Add friends in Settings.</li>
-                    {% endfor %}
-                </ul>
-            </div>
-            
-            <div class="tab-content groups">
-                <ul class="group-list">
-                    {% for group in user_groups %}
-                    <li class="group" data-group-id="{{ group.id }}">
-                        <img src="{{ group.avatar or url_for('static', filename='img/default-group.png') }}" alt="Group" class="avatar">
-                        <div class="group-info">
-                            <span class="name">{{ group.name }}</span>
-                            <div class="last-message">
-                                <span class="preview">Последнее сообщение...</span>
-                                <span class="time">14:30</span>
-                            </div>
-                        </div>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </section>
+    <!-- Search bar -->
+    <!-- Search bar -->
+  <div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search">
+    <button type="button" class="all-button">All</button>
+  </div>  
+    
+    <!-- Filter tabs -->
+  <div class="filter-tabs">
+    <button type="button" class="tab">All</button>
+    <button type="button" class="tab">Unread</button>
+    <button type="button" class="tab">Read</button>
+  </div>
+    
+    <!-- Main content area -->
+    <div class="content">
+      <!-- Chat list -->
+      <div class="sidebar">
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Dair</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
         
-        <section class="chat">
-            <div class="chat-header">
-                <span class="chat-title">Выберите чат, чтобы начать общение</span>
-                <div class="chat-actions" style="display: none;">
-                    <button class="action-btn add-member-btn" title="Add Member">+Add member</button>
-                    <button class="action-btn edit-group-btn" title="Edit Group Name">✏️</button>
-                    <button class="action-btn delete-group-btn" title="Delete Group" style="display: none;">🗑️</button>
-                </div>
-                <span class="chat-options">⚪</span>
-            </div>
-            
-            <!-- Group edit dialog -->
-            <div class="edit-group-dialog" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 10;">
-                <h3>Edit Group Name</h3>
-                <input type="text" id="edit-group-name" class="form-control" style="margin: 10px 0;">
-                <div>
-                    <button class="save-group-name">Save</button>
-                    <button class="cancel-edit">Cancel</button>
-                </div>
-            </div>
-            
-            <!-- Add member dialog -->
-            <div class="add-member-dialog" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 10; width: 300px;">
-                <h3>Add Group Member</h3>
-                <input type="text" id="new-member-name" placeholder="Enter name or email" class="form-control" style="margin: 10px 0;">
-                <div id="user-search-results" style="max-height: 200px; overflow-y: auto;"></div>
-                <div style="margin-top: 10px;">
-                    <button class="close-add-member">Cancel</button>
-                </div>
-            </div>
-            
-            <div class="messages-container">
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Nurdin</div>
+          </div>
+          <div class="chat-item-time">12:50</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Yntymak</div>
+          </div>
+          <div class="chat-item-time">11:40</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Eleonora</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Alienora</div>
+          </div>
+          <div class="chat-item-time">23:00</div>
+        </div>
+        
+            <!-- Добавьте этот элемент в список чатов (sidebar) -->
+        <div class="chat-item group-chat-item" data-chat-type="group" data-group-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="Group Avatar" />
+            <div>AIT-24 Group</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Zaryl</div>
+          </div>
+          <div class="chat-item-time">18:50</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Atai</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
 
-                
-            
-            <div class="message-input">
-                <textarea placeholder="Введите сообщение..."></textarea>
-                <button class="attach-btn">&#9776;</button>
-                <button class="send-btn">▶</button>
-            </div>
-        </section>
-    </main>
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Omur</div>
+          </div>
+          <div class="chat-item-time">13:00</div>
+        </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-    <script>
-        // Simple JavaScript for tab switching
-        document.addEventListener('DOMContentLoaded', function() {
-            const tabs = document.querySelectorAll('.tab');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabs.forEach(t => t.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    // Hide all tab contents
-                    const tabContents = document.querySelectorAll('.tab-content');
-                    tabContents.forEach(content => content.classList.remove('active'));
-                    
-                    // Show the selected tab content
-                    const tabName = this.getAttribute('data-tab');
-                    document.querySelector(`.tab-content.${tabName}`).classList.add('active');
-                });
-            });
-            
-            // Filter buttons click event
-            const filterBtns = document.querySelectorAll('.filter-btn');
-            filterBtns.forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const btnGroup = this.parentElement.querySelectorAll('.filter-btn');
-                    btnGroup.forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                });
-            });
-            
-            // Group double-click handler
-            document.querySelectorAll('.group').forEach(group => {
-                group.addEventListener('dblclick', function() {
-                    const groupId = this.getAttribute('data-group-id');
-                    loadGroupDetails(groupId);
-                });
-            });
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Aman</div>
+          </div>
+          <div class="chat-item-time">23:50</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Sasha</div>
+          </div>
+          <div class="chat-item-time">14:00</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Aktan</div>
+          </div>
+          <div class="chat-item-time">16:40</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Tynchtyk</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+      </div>
+      
+      <!-- Chat messages -->
+      <div class="chat-window">
+                <!-- Вставьте в начало div.chat-window, перед status-circle -->
+        <div class="group-header">
+          <div class="group-info">
+            <img src="https://placehold.co/50x50" alt="Group Image" class="group-avatar">
+            <div class="group-details">
+              <div class="group-name">AIT-24 Group</div>
+              <div class="group-members">15 members</div>
+            </div>
+          </div>
+        </div>
+        <button class="status-circle" aria-label="User Status" title="more"></button>
+        <div class="delete-chat-widget" id="deleteChatWidget">
+          <button class="delete-chat-btn">Delete Chat</button>
+        </div>
+        <div class="chat-messages">
+          <div class="date-label">03.03.2025</div>
+          
+          <!-- Наше сообщение - время слева -->
+          <div class="message-container sent-container">
+            <div class="message sent">
+              Hi
+              <div class="message-footer">
+                <span class="read-status read">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
+                    <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Чужое сообщение - время справа -->
+          <div class="message-container received-container">
+            <div class="message received">
+              Hello
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              Blabla
+              <div class="message-footer">
+                <span class="message-time">16:05</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              blabla
+              <div class="message-footer">
+                <span class="message-time">16:06</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="date-label">23.04.2025</div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              Hello
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              Blabla?
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Наши сообщения - непрочитанное -->
+          <div class="message-container sent-container">
+            <div class="message sent">
+              Bla!
+              <div class="message-footer">
+                <span class="read-status unread">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
+                    <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="message-time">16:05</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="input-box">
+          <div class="options-container">
+              <button type="button" class="options-button">
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+              </button>
+              
+              <!-- Всплывающее меню (по умолчанию скрыто) -->
+              <div class="options-menu" id="optionsMenu">
+                  <button class="option-btn">Pictures</button>
+                  <button class="option-btn">Videos</button>
+              </div>
+          </div>
+          
+          <input type="text" placeholder="Type a message..." />
+          <button type="button" class="send-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#306748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Обработчик клика по кнопке меню
+    document.getElementById('settingsButton').addEventListener('click', function() {
+      // Переход на страницу настроек
+      window.location.href = '/settings';
+    });
+    // Код для управления выпадающим меню с опциями
+    document.querySelector('.options-button').addEventListener('click', function(event) {
+      const menu = document.getElementById('optionsMenu');
+      menu.classList.toggle('visible');
+      event.stopPropagation(); // Предотвращаем "всплытие" события
+    });
+  
+    // Закрытие меню при клике в любом месте документа
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('optionsMenu');
+      if (menu.classList.contains('visible')) {
+        menu.classList.remove('visible');
+      }
+    });
+  
+    // Предотвращаем закрытие меню при клике на самом меню
+    document.querySelector('.options-menu').addEventListener('click', function(event) {
+      event.stopPropagation();
+    });
+  
+    // Обработчики для кнопок "Pictures" и "Videos"
+    document.querySelectorAll('.option-btn').forEach(function(button) {
+      button.addEventListener('click', function() {
+        alert('Выбрана опция: ' + this.textContent);
+        // Здесь можно добавить логику для загрузки изображений или видео
+      });
+    });
+
+
+
+
+
+
+     // Функция для создания нового сообщения
+    function createMessage(text, isSent, isRead = false) {
+      // Создаем основные контейнеры
+      const container = document.createElement('div');
+      container.className = isSent ? 'message-container sent-container' : 'message-container received-container';
+  
+      const messageDiv = document.createElement('div');
+      messageDiv.className = isSent ? 'message sent' : 'message received';
+      messageDiv.textContent = text;
+  
+      // Если это наше сообщение, добавляем кнопку редактирования и виджет
+      if (isSent) {
+        // Создаем виджет с кнопками
+        const editWidget = document.createElement('div');
+        editWidget.className = 'edit-widget';
+    
+        const editBtn = document.createElement('button');
+        editBtn.className = 'widget-button edit-btn';
+        editBtn.textContent = 'Edit';
+    
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'widget-button delete-btn';
+        deleteBtn.textContent = 'Delete';
+    
+        editWidget.appendChild(editBtn);
+        editWidget.appendChild(deleteBtn);
+        messageDiv.appendChild(editWidget);
+    
+        // Добавляем кнопку-карандаш
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        `;
+    
+        // Обработчик клика по карандашу
+        editButton.addEventListener('click', function(e) {
+          e.stopPropagation(); // Останавливаем всплытие события
+          toggleWidget(editWidget);
         });
-        
-        // Load group details
-        function loadGroupDetails(groupId) {
-            fetch(`/get_group_details/${groupId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        // Set the chat title to the group name
-                        document.querySelector('.chat-title').textContent = data.group.name;
-                        
-                        // Configure UI based on user role
-                        const chatActions = document.querySelector('.chat-actions');
-                        chatActions.style.display = 'flex';
-                        
-                        // All members can see Add member and Edit buttons
-                        document.querySelector('.add-member-btn').style.display = 'inline-block';
-                        document.querySelector('.edit-group-btn').style.display = 'inline-block';
-                        
-                        // Only creator can delete the group
-                        document.querySelector('.delete-group-btn').style.display = 
-                            data.group.is_creator ? 'inline-block' : 'none';
-                        
-                        // Store the current group ID for later operations
-                        document.querySelector('.chat').dataset.groupId = groupId;
-                        
-                        // Display members in the chat area
-                        displayGroupMembers(data.group.members, data.group.is_creator);
-                        
-                        // Set up event handlers for the buttons
-                        setupGroupActionButtons(groupId);
-                    }
-                    else {
-                        alert(data.message || 'Failed to load group details');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error loading group details:', error);
-                });
+    
+        // Обработчики для кнопок в виджете
+        editBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          editMessage(messageDiv, text);
+          editWidget.classList.remove('visible');
+        });
+    
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          container.remove(); // Удаляем всё сообщение
+        });
+    
+        messageDiv.appendChild(editButton);
+      }
+  
+      // Создаем футер с временем и статусом
+      const footer = document.createElement('div');
+      footer.className = 'message-footer';
+  
+      // Добавляем текущее время
+      const time = document.createElement('span');
+      time.className = 'message-time';
+      const now = new Date();
+      time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
+                       now.getMinutes().toString().padStart(2, '0');
+  
+      // Если это наше сообщение, добавляем индикатор прочтения
+      if (isSent) {
+        const readStatus = document.createElement('span');
+        readStatus.className = isRead ? 'read-status read' : 'read-status unread';
+    
+        // Создаем SVG-иконку статуса
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '16');
+        svg.setAttribute('height', '11');
+        svg.setAttribute('viewBox', '0 0 16 12');
+    
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        if (isRead) {
+          path.setAttribute('d', 'M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
+        } else {
+          path.setAttribute('d', 'M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
         }
-        
-        // Function to display group members in the chat with improved formatting
-        function displayGroupMembers(members, isCreator) {
-            const messagesContainer = document.querySelector('.messages-container');
-            
-            // Clear previous content
-            messagesContainer.innerHTML = '';
-            
-            // Add group info header
-            const groupInfoHeader = document.createElement('div');
-            groupInfoHeader.className = 'group-info-header';
-            groupInfoHeader.textContent = isCreator ? 'Your Group Members:' : 'Group Members:';
-            messagesContainer.appendChild(groupInfoHeader);
-            
-            // Create a members list
-            const membersList = document.createElement('div');
-            membersList.className = 'members-list';
-            
-            // Sort members to show creator first, then admins, then regular members
-            const sortedMembers = [...members].sort((a, b) => {
-                if (a.is_creator) return -1;
-                if (b.is_creator) return 1;
-                if (a.is_admin && !b.is_admin) return -1;
-                if (!a.is_admin && b.is_admin) return 1;
-                return 0;
-            });
-            
-            sortedMembers.forEach(member => {
-                const memberItem = document.createElement('div');
-                memberItem.className = 'member-item';
-                
-                let roleLabel = '';
-                if (member.is_creator) {
-                    roleLabel = '<span class="role-badge creator">Creator</span>';
-                } else if (member.is_admin) {
-                    roleLabel = '<span class="role-badge admin">Admin</span>';
-                }
-                
-                memberItem.innerHTML = `
-                    <img src="${member.avatar || 'https://via.placeholder.com/40x40?text=User'}" 
-                         alt="${member.name}" class="member-avatar" onerror="this.src='https://via.placeholder.com/40x40?text=User'">
-                    <div class="member-info">
-                        <div class="member-name">${member.nickname || member.name} ${roleLabel}</div>
-                    </div>
-                `;
-                
-                membersList.appendChild(memberItem);
-            });
-            
-            messagesContainer.appendChild(membersList);
+        path.setAttribute('fill', 'currentColor');
+    
+        svg.appendChild(path);
+        readStatus.appendChild(svg);
+        footer.appendChild(readStatus);
+      }
+  
+      footer.appendChild(time);
+      messageDiv.appendChild(footer);
+      container.appendChild(messageDiv);
+  
+      return container;
+    }
+
+    // Использование функции при отправке сообщения
+    document.querySelector('.send-button').addEventListener('click', function() {
+      const input = document.querySelector('.input-box input');
+      const text = input.value.trim();
+  
+      if (text) {
+        // Создаем и добавляем сообщение в чат
+        const messagesContainer = document.querySelector('.chat-messages');
+        const newMessage = createMessage(text, true, false); // Наше сообщение, непрочитанное
+        messagesContainer.appendChild(newMessage);
+    
+        // Очищаем поле ввода
+        input.value = '';
+    
+        // Прокручиваем чат вниз
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    });
+
+        // Функция для переключения видимости виджета
+    function toggleWidget(widget) {
+      widget.classList.toggle('visible');
+  
+      // Закрываем все другие виджеты
+      document.querySelectorAll('.edit-widget.visible').forEach(function(w) {
+        if (w !== widget) {
+          w.classList.remove('visible');
         }
-        
-        // Set up group action buttons with role-based permissions - updated to allow all members
-        function setupGroupActionButtons(groupId) {
-            // Add member button - visible to all members
-            const addMemberBtn = document.querySelector('.add-member-btn');
-            addMemberBtn.onclick = function() {
-                showAddMemberDialog(groupId);
-            };
+      });
+  
+      // Закрываем виджет при клике в любом месте страницы
+      setTimeout(function() {
+        const clickHandler = function() {
+          widget.classList.remove('visible');
+          document.removeEventListener('click', clickHandler);
+        };
+        document.addEventListener('click', clickHandler);
+      }, 10);
+    }
+
+    // Функция для редактирования сообщения
+    function editMessage(messageElement, currentText) {
+      // Запоминаем старое содержимое и очищаем сообщение
+      const oldContent = messageElement.innerHTML;
+      const messageText = currentText || messageElement.childNodes[0].nodeValue.trim();
+  
+      // Сохраняем дочерние элементы (кроме текста)
+      const childElements = Array.from(messageElement.children);
+  
+      // Очищаем содержимое сообщения
+      messageElement.innerHTML = '';
+  
+      // Создаем поле ввода для редактирования
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = messageText;
+      input.style.width = '100%';
+      input.style.padding = '5px';
+      input.style.border = 'none';
+      input.style.borderRadius = '5px';
+      input.style.backgroundColor = 'white';
+      input.style.color = '#333';
+      input.style.marginBottom = '5px';
+  
+      // Добавляем кнопки для сохранения/отмены
+      const saveButton = document.createElement('button');
+      saveButton.textContent = 'Save';
+      saveButton.style.backgroundColor = '#4CAF50';
+      saveButton.style.color = 'white';
+      saveButton.style.border = 'none';
+      saveButton.style.borderRadius = '3px';
+      saveButton.style.padding = '3px 6px';
+      saveButton.style.marginRight = '5px';
+      saveButton.style.cursor = 'pointer';
+  
+      const cancelButton = document.createElement('button');
+      cancelButton.textContent = 'Cancel';
+      cancelButton.style.backgroundColor = '#F44336';
+      cancelButton.style.color = 'white';
+      cancelButton.style.border = 'none';
+      cancelButton.style.borderRadius = '3px';
+      cancelButton.style.padding = '3px 6px';
+      cancelButton.style.cursor = 'pointer';
+  
+      // Добавляем элементы в DOM
+      messageElement.appendChild(input);
+      messageElement.appendChild(saveButton);
+      messageElement.appendChild(cancelButton);
+  
+      // Ставим фокус на поле ввода
+      input.focus();
+  
+      // Обработчики для кнопок
+      saveButton.addEventListener('click', function() {
+        const newText = input.value.trim();
+        if (newText) {
+          // Восстанавливаем сообщение с новым текстом
+          messageElement.innerHTML = '';
+          messageElement.textContent = newText;
+      
+          // Восстанавливаем все дочерние элементы
+          childElements.forEach(el => {
+            messageElement.appendChild(el.cloneNode(true));
+          });
+      
+          // Переназначаем обработчики событий
+          attachEventHandlers(messageElement);
+        }
+      });
+  
+      cancelButton.addEventListener('click', function() {
+        // Отменяем редактирование, возвращая старое содержимое
+        messageElement.innerHTML = oldContent;
+        // Переназначаем обработчики событий
+        attachEventHandlers(messageElement);
+      });
+    }
+
+    // Функция для переназначения обработчиков событий
+    function attachEventHandlers(messageElement) {
+      const editButton = messageElement.querySelector('.edit-button');
+      const editWidget = messageElement.querySelector('.edit-widget');
+      const editBtn = messageElement.querySelector('.edit-btn');
+      const deleteBtn = messageElement.querySelector('.delete-btn');
+  
+      if (editButton && editWidget) {
+        editButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleWidget(editWidget);
+        });
+      }
+  
+      if (editBtn) {
+        editBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const messageText = messageElement.childNodes[0].nodeValue.trim();
+          editMessage(messageElement, messageText);
+          editWidget.classList.remove('visible');
+        });
+      }
+  
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          messageElement.closest('.message-container').remove();
+        });
+      }
+    }
+
+        // Добавьте этот код в конец скрипта
+    document.addEventListener('DOMContentLoaded', function() {
+      // Добавляем карандаш к существующим сообщениям
+      const sentMessages = document.querySelectorAll('.message.sent');
+  
+      sentMessages.forEach(function(message) {
+        // Проверяем, есть ли уже кнопка редактирования
+        if (!message.querySelector('.edit-button')) {
+          // Создаем виджет с кнопками
+          const editWidget = document.createElement('div');
+          editWidget.className = 'edit-widget';
+      
+          const editBtn = document.createElement('button');
+          editBtn.className = 'widget-button edit-btn';
+          editBtn.textContent = 'Edit';
+      
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'widget-button delete-btn';
+          deleteBtn.textContent = 'Delete';
+      
+          editWidget.appendChild(editBtn);
+          editWidget.appendChild(deleteBtn);
+          message.appendChild(editWidget);
+      
+          // Добавляем кнопку-карандаш
+          const editButton = document.createElement('button');
+          editButton.className = 'edit-button';
+          editButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+          `;
+      
+          message.appendChild(editButton);
+      
+          // Назначаем обработчики событий
+          attachEventHandlers(message);
+        }
+      });
+    });
+
+
+
+
+        // Добавьте этот код в раздел <script> в конце документа
+    document.addEventListener('DOMContentLoaded', function() {
+      // Обработчик для желтой кнопки status-circle
+      const statusCircle = document.querySelector('.status-circle');
+      const deleteChatWidget = document.getElementById('deleteChatWidget');
+  
+      if (statusCircle && deleteChatWidget) {
+        // Обработчик нажатия на желтую кнопку
+        statusCircle.addEventListener('click', function(e) {
+          e.stopPropagation(); // Предотвращаем всплытие события
+          toggleDeleteChatWidget(deleteChatWidget);
+        });
+    
+        // Обработчик для кнопки "Delete Chat"
+        const deleteButton = deleteChatWidget.querySelector('.delete-chat-btn');
+        if (deleteButton) {
+          deleteButton.addEventListener('click', function(e) {
+            e.stopPropagation();
             
-            // Edit group name button - visible to all members
-            const editGroupBtn = document.querySelector('.edit-group-btn');
-            editGroupBtn.onclick = function() {
-                const currentName = document.querySelector('.chat-title').textContent;
-                document.getElementById('edit-group-name').value = currentName;
-                document.querySelector('.edit-group-dialog').style.display = 'block';
-            };
-            
-            // Delete group button remains for creator only
-            const deleteGroupBtn = document.querySelector('.delete-group-btn');
-            if (deleteGroupBtn.style.display !== 'none') {
-                deleteGroupBtn.onclick = function() {
-                    if (confirm('Are you sure you want to delete this group?')) {
-                        deleteGroup(groupId);
-                    }
-                };
+            // Получаем активный чат
+            const activeChat = document.querySelector('.chat-item.active');
+            if (!activeChat) {
+              showNotification('No chat selected', true);
+              deleteChatWidget.classList.remove('visible');
+              return;
             }
             
-            // Save edited group name button
-            document.querySelector('.save-group-name').onclick = function() {
-                const newName = document.getElementById('edit-group-name').value.trim();
-                if (newName) {
-                    editGroupName(groupId, newName);
-                    document.querySelector('.edit-group-dialog').style.display = 'none';
-                }
-            };
+            // Определяем тип чата (группа или личный)
+            const chatType = activeChat.getAttribute('data-chat-type');
             
-            // Cancel edit button
-            document.querySelector('.cancel-edit').onclick = function() {
-                document.querySelector('.edit-group-dialog').style.display = 'none';
-            };
+            if (chatType === 'group') {
+              // Если это групповой чат
+              const groupId = activeChat.getAttribute('data-group-id');
+              if (!groupId) {
+                showNotification('Cannot identify group ID', true);
+                deleteChatWidget.classList.remove('visible');
+                return;
+              }
+              
+                // Отправляем запрос на удаление группы
+                deleteGroup(groupId);
+              
+            } 
+            else if (chatType === 'direct') {
+              // Если это личный чат
+              const friendId = activeChat.getAttribute('data-user-id');
+              if (!friendId) {
+                showNotification('Cannot identify friend ID', true);
+                deleteChatWidget.classList.remove('visible');
+                return;
+              }
+              
+                // Отправляем запрос на удаление личного чата
+                deleteDirectChat(friendId);
+            }
             
-            // Close add member dialog
-            document.querySelector('.close-add-member').onclick = function() {
-                hideAddMemberDialog();
-            };
+            // Скрываем виджет после действия
+            deleteChatWidget.classList.remove('visible');
+          });
         }
-        
-        // Show add member dialog with improved UI
-        function showAddMemberDialog(groupId) {
-            const dialog = document.querySelector('.add-member-dialog');
-            dialog.style.display = 'block';
-            
-            const searchInput = document.getElementById('new-member-name');
-            searchInput.value = '';
-            searchInput.focus();
-            
-            // Clear previous search results
-            document.getElementById('user-search-results').innerHTML = '';
-            
-            // Set up search input event
-            searchInput.oninput = function() {
-                const query = this.value.trim();
-                if (query.length >= 2) {
-                    searchUsersForGroup(query, groupId);
-                } else {
-                    document.getElementById('user-search-results').innerHTML = 
-                        '<div class="search-instruction">Enter at least 2 characters to search</div>';
-                }
-            };
-        }
-        
-        // Hide add member dialog
-        function hideAddMemberDialog() {
-            document.querySelector('.add-member-dialog').style.display = 'none';
-            document.getElementById('new-member-name').value = '';
-            document.getElementById('user-search-results').innerHTML = '';
-        }
-        
-        // Search users for adding to group - improved to match the requirements
-        function searchUsersForGroup(query, groupId) {
-            const resultsContainer = document.getElementById('user-search-results');
-            resultsContainer.innerHTML = '<div class="searching">Searching...</div>';
-            
-            fetch(`/search_users?q=${encodeURIComponent(query)}&group_id=${groupId}`)
-                .then(response => response.json())
-                .then(data => {
-                    resultsContainer.innerHTML = '';
-                    
-                    if (!data.success) {
-                        resultsContainer.innerHTML = `<div class="error-message">${data.message || 'Error searching users'}</div>`;
-                        return;
-                    }
-                    
-                    if (data.users.length === 0) {
-                        resultsContainer.innerHTML = '<div class="no-results">No matching users found</div>';
-                        return;
-                    }
-                    
-                    // Display matching users with add buttons
-                    data.users.forEach(user => {
-                        const userItem = document.createElement('div');
-                        userItem.className = 'user-search-item';
-                        
-                        userItem.innerHTML = `
-                            <img src="${user.avatar || 'https://via.placeholder.com/30x30?text=U'}" 
-                                 alt="${user.name}" class="search-user-avatar" 
-                                 onerror="this.src='https://via.placeholder.com/30x30?text=U'">
-                            <div class="search-user-info">
-                                <div class="search-user-name">${user.name}</div>
-                                <div class="search-user-email">${user.email || ''}</div>
-                            </div>
-                            <button class="add-user-btn" title="Add to group" data-user-id="${user.id}">✓</button>
-                        `;
-                        
-                        resultsContainer.appendChild(userItem);
-                    });
-                    
-                    // Add event handlers to the Add buttons
-                    document.querySelectorAll('.add-user-btn').forEach(btn => {
-                        btn.onclick = function() {
-                            addGroupMember(groupId, this.getAttribute('data-user-id'));
-                        };
-                    });
-                })
-                .catch(error => {
-                    resultsContainer.innerHTML = '<div class="error-message">Error searching users</div>';
-                    console.error('Error:', error);
-                });
-        }
-        
-        // Add a member to the group - update to handle success feedback better
-        function addGroupMember(groupId, userId) {
-            // Show loading state on button
-            const button = document.querySelector(`.add-user-btn[data-user-id="${userId}"]`);
-            const originalText = button.textContent;
-            button.textContent = '...';
-            button.disabled = true;
-            
-            fetch('/add_group_member', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    group_id: groupId,
-                    user_id: userId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Show success state
-                    button.textContent = '✓';
-                    button.style.backgroundColor = '#4CAF50';
-                    button.style.color = 'white';
-                    
-                    // Briefly show success message
-                    const userItem = button.closest('.user-search-item');
-                    const successMsg = document.createElement('div');
-                    successMsg.className = 'success-message';
-                    successMsg.textContent = 'Added successfully!';
-                    userItem.appendChild(successMsg);
-                    
-                    // Hide dialog after delay
-                    setTimeout(() => {
-                        hideAddMemberDialog();
-                        // Refresh group details to show new member
-                        loadGroupDetails(groupId);
-                    }, 1000);
-                } else {
-                    alert(data.message || 'Failed to add member');
-                    button.textContent = originalText;
-                    button.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error('Error adding member:', error);
-                alert('An error occurred while adding the member');
-                button.textContent = originalText;
-                button.disabled = false;
-            });
-        }
-        
-        // Delete a group
-        function deleteGroup(groupId) {
-            fetch('/delete_group', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    group_id: groupId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Group deleted successfully!');
-                    // Remove the group from the list in the UI
-                    document.querySelector(`.group[data-group-id="${groupId}"]`).remove();
-                    // Reset the chat panel
-                    document.querySelector('.chat-title').textContent = 'Выберите чат, чтобы начать общение';
-                    document.querySelector('.chat-actions').style.display = 'none';
-                } else {
-                    alert(data.message || 'Failed to delete group');
-                }
-            })
-            .catch(error => {
-                console.error('Error deleting group:', error);
-                alert('An error occurred while deleting the group');
-            });
-        }
-        
-        // Edit group name
-        function editGroupName(groupId, newName) {
-            fetch('/edit_group_name', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    group_id: groupId,
-                    name: newName
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the group name in the UI
-                    document.querySelector('.chat-title').textContent = newName;
-                    document.querySelector(`.group[data-group-id="${groupId}"] .name`).textContent = newName;
-                } else {
-                    alert(data.message || 'Failed to update group name');
-                }
-            })
-            .catch(error => {
-                console.error('Error updating group name:', error);
-                alert('An error occurred while updating the group name');
-            });
-        }
-    </script>
+      }
+    });
 
-    <!-- Add improved styles for the member search UI -->
-    <style>
-        /* ...existing styles... */
-        
-        .add-member-dialog {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.3);
-            z-index: 10;
-            width: 350px;
+    // Функция для удаления группы
+    function deleteGroup(groupId) {
+      fetch('/delete_group', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ group_id: groupId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Показываем уведомление об успехе
+          showNotification('Group deleted successfully');
+          
+          // Удаляем группу из сайдбара
+          const groupChat = document.querySelector(`.chat-item[data-group-id="${groupId}"]`);
+          if (groupChat) {
+            groupChat.remove();
+          }
+          
+          // Очищаем область сообщений
+          document.querySelector('.chat-messages').innerHTML = '';
+          
+          // Удаляем заголовок группы
+          const groupHeader = document.querySelector('.group-header');
+          if (groupHeader) {
+            groupHeader.remove();
+          }
+        } else {
+          // Показываем уведомление об ошибке
+          showNotification('Error: ' + (data.message || 'Failed to delete group'), true);
         }
-        
-        .add-member-dialog h3 {
-            margin-bottom: 15px;
-            color: #333;
-            font-size: 18px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+      })
+      .catch(error => {
+        console.error('Error deleting group:', error);
+        showNotification('Error deleting group. Please try again.', true);
+      });
+    }
+
+    // Функция для показа уведомлений
+    function showNotification(message, isError = false) {
+      const notification = document.createElement('div');
+      notification.textContent = message;
+      notification.style.position = 'fixed';
+      notification.style.top = '20px';
+      notification.style.left = '50%';
+      notification.style.transform = 'translateX(-50%)';
+      notification.style.backgroundColor = isError ? '#F44336' : '#4CAF50';
+      notification.style.color = 'white';
+      notification.style.padding = '10px 20px';
+      notification.style.borderRadius = '5px';
+      notification.style.zIndex = '1000';
+      notification.style.opacity = '0';
+      notification.style.transition = 'opacity 0.3s';
+      
+      document.body.appendChild(notification);
+      
+      setTimeout(() => {
+        notification.style.opacity = '1';
+        setTimeout(() => {
+          notification.style.opacity = '0';
+          setTimeout(() => {
+            document.body.removeChild(notification);
+          }, 300);
+        }, 2000);
+      }, 10);
+    }
+
+    // Функция для переключения видимости виджета удаления чата
+    function toggleDeleteChatWidget(widget) {
+      widget.classList.toggle('visible');
+      
+      // Закрываем виджет при клике в любом месте страницы
+      setTimeout(function() {
+        const clickHandler = function() {
+          widget.classList.remove('visible');
+          document.removeEventListener('click', clickHandler);
+        };
+        document.addEventListener('click', clickHandler);
+      }, 10);
+    }
+    
+    // Функция для удаления личного чата
+    function deleteDirectChat(friendId) {
+      fetch('/delete_direct_chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ friend_id: friendId })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Показываем уведомление об успехе
+          showNotification('Chat deleted successfully');
+          
+          // Очищаем область сообщений
+          document.querySelector('.chat-messages').innerHTML = '';
+        } else {
+          // Показываем уведомление об ошибке
+          showNotification('Error: ' + (data.message || 'Failed to delete chat'), true);
         }
+      })
+      .catch(error => {
+        console.error('Error deleting chat:', error);
+        showNotification('Error deleting chat. Please try again.', true);
+      });
+    }
+
+        /**
+     * Функция для создания группового сообщения
+     * @param {string} text - текст сообщения
+     * @param {boolean} isSent - это наше сообщение?
+     * @param {boolean} isRead - прочитано ли сообщение
+     * @param {string} senderName - имя отправителя (только для чужих сообщений)
+     * @param {string} senderAvatar - путь к аватару отправителя (только для чужих сообщений)
+     */
+    function createGroupMessage(text, isSent, isRead = false, senderName = '', senderAvatar = '') {
+      // Создаем основные контейнеры
+      const container = document.createElement('div');
+      container.className = isSent 
+        ? 'message-container sent-container' 
+        : 'message-container received-container group-message';
+      
+      // Если сообщение от другого участника, добавляем информацию об отправителе
+      if (!isSent) {
+        const senderInfo = document.createElement('div');
+        senderInfo.className = 'sender-info';
         
-        #new-member-name {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
+        const avatar = document.createElement('img');
+        avatar.className = 'sender-avatar';
+        avatar.src = senderAvatar || 'https://placehold.co/30x30';
+        avatar.alt = senderName || 'User';
         
-        #user-search-results {
-            max-height: 250px;
-            overflow-y: auto;
-            margin-bottom: 15px;
-        }
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'sender-name';
+        nameDiv.textContent = senderName || 'Unknown User';
         
-        .user-search-item {
-            display: flex;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid #f0f0f0;
-        }
+        senderInfo.appendChild(avatar);
+        senderInfo.appendChild(nameDiv);
+        container.appendChild(senderInfo);
+      }
+      
+      // Создаем само сообщение
+      const messageDiv = document.createElement('div');
+      messageDiv.className = isSent ? 'message sent' : 'message received';
+      messageDiv.textContent = text;
+      
+      // Если это наше сообщение, добавляем инструменты редактирования
+      if (isSent) {
+        // Создаем виджет с кнопками
+        const editWidget = document.createElement('div');
+        editWidget.className = 'edit-widget';
         
-        .search-user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            margin-right: 10px;
-            object-fit: cover;
-        }
+        const editBtn = document.createElement('button');
+        editBtn.className = 'widget-button edit-btn';
+        editBtn.textContent = 'Edit';
         
-        .search-user-info {
-            flex: 1;
-        }
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'widget-button delete-btn';
+        deleteBtn.textContent = 'Delete';
         
-        .search-user-name {
-            font-weight: bold;
-        }
+        editWidget.appendChild(editBtn);
+        editWidget.appendChild(deleteBtn);
+        messageDiv.appendChild(editWidget);
         
-        .search-user-email {
-            font-size: 12px;
-            color: #777;
-        }
+        // Добавляем кнопку-карандаш
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        `;
         
-        .add-user-btn {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background-color: #f0f0f0;
-            border: none;
-            color: #333;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        // Обработчики событий для инструментов редактирования
+        editButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleWidget(editWidget);
+        });
         
-        .add-user-btn:hover {
-            background-color: #4CAF50;
-            color: white;
-        }
+        editBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          editMessage(messageDiv, text);
+          editWidget.classList.remove('visible');
+        });
         
-        .close-add-member {
-            padding: 8px 15px;
-            background-color: #f0f0f0;
-            border: none;
-            border-radius: 4px;
-            color: #333;
-            cursor: pointer;
-            font-size: 14px;
-            display: block;
-            margin: 0 auto;
-        }
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          container.remove();
+        });
         
-        .close-add-member:hover {
-            background-color: #e0e0e0;
-        }
+        messageDiv.appendChild(editButton);
+      }
+      
+      // Создаем футер с временем и статусом прочтения
+      const footer = document.createElement('div');
+      footer.className = 'message-footer';
+      
+      // Добавляем текущее время
+      const time = document.createElement('span');
+      time.className = 'message-time';
+      const now = new Date();
+      time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
+                         now.getMinutes().toString().padStart(2, '0');
+      
+      // Если это наше сообщение, добавляем индикатор прочтения
+      if (isSent) {
+        const readStatus = document.createElement('span');
+        readStatus.className = isRead ? 'read-status read' : 'read-status unread';
         
-        .searching, .no-results, .search-instruction, .error-message {
-            padding: 10px;
-            text-align: center;
-            color: #666;
-        }
+        // Создаем SVG-иконку статуса
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '16');
+        svg.setAttribute('height', '11');
+        svg.setAttribute('viewBox', '0 0 16 12');
         
-        .error-message {
-            color: #f44336;
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        if (isRead) {
+          path.setAttribute('d', 'M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
+        } else {
+          path.setAttribute('d', 'M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
         }
+        path.setAttribute('fill', 'currentColor');
         
-        .success-message {
-            color: #4CAF50;
-            text-align: center;
-            width: 100%;
-            padding: 5px;
-            margin-top: 5px;
+        svg.appendChild(path);
+        readStatus.appendChild(svg);
+        footer.appendChild(readStatus);
+      }
+      
+      footer.appendChild(time);
+      messageDiv.appendChild(footer);
+      container.appendChild(messageDiv);
+      
+      return container;
+    }
+
+
+        // Функция для загрузки группового чата
+    function loadGroupChat(groupId) {
+      const chatWindow = document.querySelector('.chat-window');
+      const chatMessages = document.querySelector('.chat-messages');
+      
+      // Очищаем текущие сообщения
+      chatMessages.innerHTML = '';
+      
+      // Проверяем, есть ли у нас уже заголовок группы
+      let groupHeader = document.querySelector('.group-header');
+      
+      // Если заголовка нет, создаем его
+      if (!groupHeader) {
+        groupHeader = document.createElement('div');
+        groupHeader.className = 'group-header';
+        groupHeader.innerHTML = `
+          <div class="group-info">
+            <img src="https://placehold.co/50x50" alt="Group Image" class="group-avatar">
+            <div class="group-details">
+              <div class="group-name">AIT-24 Group</div>
+              <div class="group-members">15 members</div>
+            </div>
+          </div>
+        `;
+        
+        // Вставляем заголовок перед всеми другими элементами
+        chatWindow.insertBefore(groupHeader, chatWindow.firstChild);
+      }
+      
+      // Добавляем дату
+      const dateLabel = document.createElement('div');
+      dateLabel.className = 'date-label';
+      dateLabel.textContent = '14.04.2025';
+      chatMessages.appendChild(dateLabel);
+      
+      // Добавляем примеры групповых сообщений
+      const messages = [
+        {
+          text: "Hello everyone!",
+          isSent: true,
+          isRead: true
+        },
+        {
+          text: "Hi! How's the project going?",
+          isSent: false,
+          senderName: "Aktan",
+          senderAvatar: "https://placehold.co/30x30/orange/white"
+        },
+        {
+          text: "We need to finish the UI design by tomorrow.",
+          isSent: false,
+          senderName: "Dair",
+          senderAvatar: "https://placehold.co/30x30/green/white"
+        },
+        {
+          text: "I've completed the database schema.",
+          isSent: true,
+          isRead: false
+        },
+        {
+          text: "Great job! I'll review it later today.",
+          isSent: false,
+          senderName: "Eleonora",
+          senderAvatar: "https://placehold.co/30x30/purple/white"
         }
-    </style>
+      ];
+      
+      // Добавляем сообщения в чат
+      messages.forEach(msg => {
+        const messageEl = createGroupMessage(
+          msg.text, 
+          msg.isSent, 
+          msg.isRead || false, 
+          msg.senderName || '', 
+          msg.senderAvatar || ''
+        );
+        chatMessages.appendChild(messageEl);
+      });
+      
+      // Прокручиваем чат вниз
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+        // Обработчик для клика по чату в списке
+    document.addEventListener('DOMContentLoaded', function() {
+      const chatItems = document.querySelectorAll('.chat-item');
+      
+      chatItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Выделяем активный чат
+          document.querySelectorAll('.chat-item').forEach(chat => {
+            chat.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          // Проверяем тип чата
+          const chatType = this.getAttribute('data-chat-type');
+          const userId = this.getAttribute('data-user-id');
+          const userName = this.querySelector('.chat-item-name div').textContent.trim();
+          
+          // Очищаем все сообщения перед загрузкой нового чата
+          document.querySelector('.chat-messages').innerHTML = '';
+          
+          if (chatType === 'group') {
+            // Если это групповой чат, загружаем групповой интерфейс
+            const groupId = this.getAttribute('data-group-id');
+            loadGroupChat(groupId);
+          } else {
+            // Загружаем личный чат
+            loadDirectChat(userId, userName);
+          }
+        });
+      });
+    });
+    
+        // Обновленный обработчик отправки сообщений
+    document.querySelector('.send-button').addEventListener('click', function() {
+      const input = document.querySelector('.input-box input');
+      const text = input.value.trim();
+      
+      if (text) {
+        const messagesContainer = document.querySelector('.chat-messages');
+        
+        // Проверяем, находимся ли мы в групповом чате
+        const isGroupChat = document.querySelector('.group-header') !== null;
+        
+        // Создаем сообщение в соответствии с типом чата
+        const newMessage = isGroupChat 
+          ? createGroupMessage(text, true, false) 
+          : createMessage(text, true, false);
+          
+        messagesContainer.appendChild(newMessage);
+        
+        // Очищаем поле ввода
+        input.value = '';
+        
+        // Прокручиваем чат вниз
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    });
+
+
+        // Функция для загрузки личного чата
+    function loadDirectChat(userId, userName) {
+      const chatWindow = document.querySelector('.chat-window');
+      const chatMessages = document.querySelector('.chat-messages');
+      
+      // Очищаем текущие сообщения
+      chatMessages.innerHTML = '';
+      
+      // Удаляем заголовок группы, если он есть
+      const groupHeader = document.querySelector('.group-header');
+      if (groupHeader) {
+        groupHeader.remove();
+      }
+      
+      // Добавляем дату
+      const dateLabel = document.createElement('div');
+      dateLabel.className = 'date-label';
+      dateLabel.textContent = '14.04.2025';
+      chatMessages.appendChild(dateLabel);
+      
+      // Добавляем примеры личных сообщений
+      const messages = [
+        {
+          text: "Hello!",
+          isSent: false,
+          time: "14:01"
+        },
+        {
+          text: "Hi there! How are you?",
+          isSent: true,
+          isRead: true,
+          time: "14:02"
+        },
+        {
+          text: "I'm good, thanks for asking. Do you have a minute to talk about the project?",
+          isSent: false,
+          time: "14:03"
+        },
+        {
+          text: "Sure, what would you like to know?",
+          isSent: true,
+          isRead: false,
+          time: "14:05"
+        }
+      ];
+      
+      // Добавляем сообщения в чат
+      messages.forEach(msg => {
+        const messageEl = createMessage(
+          msg.text, 
+          msg.isSent, 
+          msg.isRead || false
+        );
+        chatMessages.appendChild(messageEl);
+      });
+      
+      // Прокручиваем чат вниз
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Load friends list when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Add this function call
+      fetchFriendsList();
+      
+      // Keep the existing DOMContentLoaded code
+      const chatItems = document.querySelectorAll('.chat-item');
+      
+      chatItems.forEach(item => {
+        // ...existing code...
+      });
+    });
+
+    // Function to fetch friends list from API
+    function fetchFriendsList() {
+      fetch('/get_friends')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            updateFriendsList(data.friends);
+          } else {
+            console.error('Error fetching friends:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching friends:', error);
+        });
+    }
+
+    // Function to update the sidebar with friends
+    function updateFriendsList(friends) {
+      const sidebar = document.querySelector('.sidebar');
+      
+      // Clear existing direct chat items
+      const directChatItems = sidebar.querySelectorAll('.chat-item[data-chat-type="direct"]');
+      directChatItems.forEach(item => item.remove());
+      
+      // Add each friend to the sidebar
+      friends.forEach(friend => {
+        const chatItem = document.createElement('div');
+        chatItem.className = 'chat-item';
+        chatItem.setAttribute('data-chat-type', 'direct');
+        chatItem.setAttribute('data-user-id', friend.id);
+        
+        chatItem.innerHTML = `
+          <div class="chat-item-name">
+            <img src="${friend.avatar || 'https://placehold.co/49x49'}" alt="avatar" />
+            <div>${friend.nickname || friend.name}</div>
+          </div>
+          <div class="chat-item-time"></div>
+        `;
+        
+        // Add click event handler for chat items
+        chatItem.addEventListener('click', function() {
+          document.querySelectorAll('.chat-item').forEach(chat => {
+            chat.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          const userId = this.getAttribute('data-user-id');
+          const userName = this.querySelector('.chat-item-name div').textContent.trim();
+          
+          document.querySelector('.chat-messages').innerHTML = '';
+          loadDirectChat(userId, userName);
+        });
+        
+        sidebar.appendChild(chatItem);
+      });
+    }
+  </script>
 </body>
 </html>

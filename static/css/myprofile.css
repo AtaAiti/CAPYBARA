@@ -1,0 +1,130 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Konkhmer Sleokchher', cursive;
+  }
+  
+  .container {
+    width: 745px;
+    height: 800px;
+    position: relative;
+    font-family: 'Konkhmer Sleokchher', cursive;
+  }
+  
+  .main-background {
+    width: 745px;
+    height: 800px;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+    background: #FDD367;
+    border-radius: 70px;
+    border: none;
+  }
+  
+  .background-image {
+    width: 745px;
+    height: 600px;
+    left: 0px;
+    top: 120px;
+    position: absolute;
+    opacity: 0.08;
+    border-radius: 70px;
+  }
+  
+  .title {
+    width: 400px;
+    height: 70px;
+    position: absolute;
+    text-align: center;
+    color: #76536B;
+    font-size: 60px;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    font-weight: 400;
+    word-wrap: break-word;
+    top: 20px;
+    left: 170px;
+  }
+  
+  .profile-pic-container {
+    position: absolute;
+    top: 100px;
+    left: 270px;
+  }
+  
+  .profile-pic {
+    width: 200px;
+    height: 200px;
+    border-radius: 100px;
+  }
+  
+  /* Фиксированное позиционирование для всех меток и значений */
+  .field-label, .field-value {
+    position: absolute;
+    left: 80px; /* Фиксированная позиция слева */
+    text-align: left;
+    width: 400px; /* Зафиксированная ширина */
+  }
+
+    /* Стили для подписей полей */
+  .field-label {
+    font-size: 22px; /* Увеличенный размер текста для подписей */
+    color: #5A3C52; /* Более тёмный оттенок фиолетового */
+    font-weight: bold; /* Жирный текст */
+  }
+  
+  /* Стили для значений полей */
+  .field-value {
+    font-size: 38px; /* Значительно увеличенный размер для значений */
+    color: #76536B; /* Оригинальный цвет, можно изменить */
+    font-weight: 500; /* Полужирный текст */
+  }
+
+  .field-value input {
+    width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+  }
+  
+  .nickname-label { top: 280px; }
+  .nickname-value { top: 305px; }
+  
+  .name-label { top: 350px; }
+  .name-value { top: 375px; }
+  
+  .password-label { top: 420px; }
+  .password-value { top: 445px; }
+  
+  .dob-label { top: 490px; }
+  .dob-value { top: 515px; }
+  
+  .bio-label { top: 560px; }
+  .bio-value { top: 585px; }
+  
+  .email-label { top: 630px; }
+  .email-value { top: 655px; }
+  
+
+  .change-button {
+    position: absolute;
+    top: 250px;
+    right: 40px;
+    background: transparent;
+    border: none;
+    color: #76536B;
+    font-size: 36px;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    cursor: pointer;
+    z-index: 2;
+    padding: 10px 15px;
+    transition: transform 0.2s;
+  }
+
+  .change-button:hover {
+    transform: scale(1.05);
+  }
+
+  .change-button:active {
+    transform: scale(0.95);
+  }
+ 

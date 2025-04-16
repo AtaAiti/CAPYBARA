@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_socketio import SocketIO, emit, join_room, leave_room
 from datetime import datetime
 from functools import wraps
 import os
@@ -17,6 +18,9 @@ app.config['UPLOAD_FOLDER'] = 'uploads/'  # Папка для загрузки �
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 # Создаем папку, если её нет
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+# Инициализация SocketIO
+socketio = SocketIO(app, cors_allowed_origins="*")
 
 db = SQLAlchemy(app)
 
@@ -137,8 +141,8 @@ def get_current_user():
 @app.route('/register', methods=['POST', 'GET'])
 def register():
     # Перенаправляем, если пользователь уже вошел в систему
-    if 'user_id' in session:
-        return redirect(url_for('mainWindow'))
+    # if 'user_id' in session:
+    #     return redirect(url_for('mainWindow'))
         
     if request.method == 'POST':
         name = request.form['name']
@@ -230,7 +234,23 @@ def settings():
     current_user = get_current_user()
     return render_template("settings.html", current_user=current_user)
 
+@app.route('/myprofile')
+@login_required
+def myprofile():
+    current_user = get_current_user()
+    return render_template("myprofile.html", current_user=current_user)
 
+@app.route('/invitefriend')
+@login_required
+def invitefriend():
+    current_user = get_current_user()
+    return render_template("invitefriend.html", current_user=current_user)
+
+@app.route('/newgroup')
+@login_required
+def newgroup():
+    current_user = get_current_user()
+    return render_template("newgroup.html", current_user=current_user)
 
 @app.route('/update_profile', methods=['POST'])
 @login_required
@@ -673,9 +693,178 @@ def edit_group_name():
         print(f"Edit group name error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
+@app.route('/get_direct_messages/<int:user_id>', methods=['GET'])
+@login_required
+def get_direct_messages(user_id):
+    try:
+        current_user = get_current_user()
+        
+        # Получаем сообщения как от текущего пользователя к выбранному, так и наоборот
+        messages = Message.query.filter(
+            ((Message.sender_id == current_user.id) & (Message.recipient_id == user_id)) |
+            ((Message.sender_id == user_id) & (Message.recipient_id == current_user.id))
+        ).order_by(Message.created_at).all()
+        
+        messages_list = []
+        
+        for message in messages:
+            sender = db.session.get(User, message.sender_id)
+            messages_list.append({
+                'id': message.id,
+                'sender_id': message.sender_id,
+                'sender_name': sender.name,
+                'content': message.content,
+                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        
+        return jsonify({
+            'success': True,
+            'messages': messages_list
+        })
+        
+    except Exception as e:
+        print(f"Get direct messages error: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/get_group_messages/<int:group_id>', methods=['GET'])
+@login_required
+def get_group_messages(group_id):
+    try:
+        current_user = get_current_user()
+        
+        # Проверяем, является ли пользователь участником группы
+        is_member = GroupMember.query.filter_by(
+            user_id=current_user.id,
+            group_id=group_id
+        ).first()
+        
+        if not is_member:
+            return jsonify({'success': False, 'message': 'Вы не являетесь участником этой группы'}), 403
+        
+        # Получаем все сообщения группы
+        messages = Message.query.filter_by(group_id=group_id).order_by(Message.created_at).all()
+        
+        messages_list = []
+        
+        for message in messages:
+            sender = db.session.get(User, message.sender_id)
+            messages_list.append({
+                'id': message.id,
+                'sender_id': message.sender_id,
+                'sender_name': sender.name,
+                'content': message.content,
+                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
+            })
+        
+        return jsonify({
+            'success': True,
+            'messages': messages_list
+        })
+        
+    except Exception as e:
+        print(f"Get group messages error: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
+
+@app.route('/delete_direct_chat', methods=['POST'])
+@login_required
+def delete_direct_chat():
+    try:
+        current_user = get_current_user()
+        data = request.get_json()
+        friend_id = data.get('friend_id')
+        
+        if not friend_id:
+            return jsonify({'success': False, 'message': 'Missing friend ID'}), 400
+            
+        # Delete all messages between the current user and the friend (in both directions)
+        Message.query.filter(
+            ((Message.sender_id == current_user.id) & (Message.recipient_id == friend_id)) |
+            ((Message.sender_id == friend_id) & (Message.recipient_id == current_user.id))
+        ).delete()
+        
+        db.session.commit()
+        
+        return jsonify({
+            'success': True,
+            'message': 'Chat deleted successfully'
+        })
+        
+    except Exception as e:
+        db.session.rollback()
+        print(f"Delete direct chat error: {str(e)}")
+        return jsonify({'success': False, 'message': f'Error deleting chat: {str(e)}'}), 500
+
+# Обработчики событий WebSocket
+@socketio.on('connect')
+def handle_connect():
+    if 'user_id' in session:
+        current_user = get_current_user()
+        emit('status', {'msg': f'{current_user.name} подключился'})
+
+@socketio.on('disconnect')
+def handle_disconnect():
+    if 'user_id' in session:
+        current_user = get_current_user()
+        emit('status', {'msg': f'{current_user.name} отключился'})
+
+@socketio.on('join')
+def handle_join(data):
+    room = data['room']
+    join_room(room)
+    current_user = get_current_user()
+    emit('status', {'msg': f'{current_user.name} присоединился к комнате {room}'}, room=room)
+
+@socketio.on('leave')
+def handle_leave(data):
+    room = data['room']
+    leave_room(room)
+    current_user = get_current_user()
+    emit('status', {'msg': f'{current_user.name} покинул комнату {room}'}, room=room)
+
+@socketio.on('message')
+def handle_message(data):
+    current_user = get_current_user()
+    room = data.get('room')
+    message_content = data.get('message')
+    recipient_type = data.get('recipient_type', 'user')  # 'user' или 'group'
+    
+    if not message_content:
+        return
+    
+    # Создаем новое сообщение в БД
+    new_message = Message(
+        sender_id=current_user.id,
+        content=message_content
+    )
+    
+    # Определяем получателя в зависимости от типа
+    if recipient_type == 'user':
+        recipient_id = data.get('recipient_id')
+        new_message.recipient_id = recipient_id
+    else:
+        group_id = data.get('group_id')
+        new_message.group_id = group_id
+    
+    try:
+        db.session.add(new_message)
+        db.session.commit()
+        
+        # Отправляем сообщение в комнату через WebSocket
+        emit('new_message', {
+            'id': new_message.id,
+            'sender_id': current_user.id,
+            'sender_name': current_user.name,
+            'content': message_content,
+            'timestamp': datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S')
+        }, room=room)
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error sending message: {str(e)}")
+        emit('error', {'msg': 'Ошибка при отправке сообщения'})
+
 # Создаем таблицы при запуске
 with app.app_context():
     db.create_all()
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    socketio.run(app, debug=True)  # Вместо app.run() используем socketio.run()
