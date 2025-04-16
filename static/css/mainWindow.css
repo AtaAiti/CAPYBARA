@@ -1,0 +1,723 @@
+body {
+    margin: 0;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    background-color: #306748;
+    color: white;
+    overflow: hidden;
+  }
+  
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* Top search bar */
+ .search-container {
+    display: flex;
+    padding: 10px;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+  }
+  
+  .search-bar {
+    width: 400px;
+    height: 60px;
+    background-color: #FDD367;
+    border-radius: 25px;
+    color: #7E453D;
+    font-size: 32px;
+    font-weight: 400;
+    border: none;
+    padding: 0 20px;
+    text-align: center;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    outline: none;
+  }
+  
+  .search-bar::placeholder {
+    color: #7E453D;
+    opacity: 1;
+  }
+  
+  .all-button {
+    width: 400px;
+    height: 60px;
+    background-color: #FDD367;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7E453D;
+    font-size: 32px;
+    font-weight: 400;
+    border: none;
+    font-family: 'Konkhmer Sleokchher', cursive;
+    cursor: pointer;
+  }
+  
+  .all-button:hover {
+    background-color: #ffcb4f;
+  }
+  
+  .all-button:active {
+    background-color: #ffb81d;
+  }
+  
+  /* Filter tabs */
+  .filter-tabs {
+    display: flex;
+    justify-content: center;
+    padding: 5px 0;
+    gap: 30px;
+    margin-bottom: 10px;
+  }
+  
+  .tab {
+    width: 250px;
+    height: 50px;
+    background-color: #FDD367;
+    border-radius: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #7E453D;
+    font-size: 28px;
+    font-weight: 400;
+    cursor: pointer;
+    border: none;
+    padding: 0;
+    font-family: 'Konkhmer Sleokchher', cursive;
+  }
+  
+  .tab:hover {
+    background-color: #ffcb4f;
+  }
+  
+  .tab:focus {
+    outline: 2px solid #7E453D;
+    outline-offset: 2px;
+  }
+  
+  .tab.active {
+    background-color: #ff9d00;
+  }
+  
+  /* Content area */
+  .content {
+    display: flex;
+    flex-grow: 1;
+    height: calc(100vh - 160px);
+  }
+  
+  /* Chat list sidebar */
+  .sidebar {
+    width: 500px;
+    background-color: #F0FAEF;
+    border-radius: 40px;
+    margin-left: 9px;
+    overflow-y: auto;
+  }
+  
+  .chat-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 15px;
+    border-bottom: 1px solid black;
+    cursor: pointer;
+  }
+  
+  .chat-item-name {
+    display: flex;
+    align-items: center;
+    color: #76536B;
+    font-size: 24px;
+  }
+  
+  .chat-item img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
+  
+  .chat-item-time {
+    color: #76536B;
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  /* Chat window */
+  .chat-window {
+    flex-grow: 1;
+    background-color: #A9A9A9;
+    border-radius: 40px;
+    margin-left: 16px;
+    margin-right: 7px;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Если еще не задано */
+  }
+
+  .status-circle {
+    width: 35px;
+    height: 35px;
+    background: #FDD367;
+    border-radius: 9999px;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    z-index: 10;
+    border: none; /* Убираем стандартную границу кнопки */
+    padding: 0; /* Убираем стандартный отступ кнопки */
+    cursor: pointer; /* Курсор-указатель для обозначения интерактивности */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  /* Эффект при наведении */
+  .status-circle:hover {
+    transform: scale(1.05);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Эффект при нажатии */
+  .status-circle:active {
+    transform: scale(0.95);
+  }
+  
+  .chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+  }
+  
+  .date-label {
+    text-align: center;
+    color: #696868;
+    font-size: 24px;
+    margin: 15px 0;
+  }
+  
+  /* Общий контейнер для сообщений */
+  .message-container {
+    display: flex;
+    margin-bottom: 10px;
+    width: 100%;
+  }
+
+  /* Контейнер для отправленных (наших) сообщений */
+  .sent-container {
+    justify-content: flex-end; /* Отправленные справа */
+  }
+  
+
+  /* Контейнер для полученных сообщений */
+  .received-container {
+    justify-content: flex-start; /* Полученные слева */
+  }
+
+  /* Базовый стиль для времени */
+  .message-time {
+    font-size: 11px;
+    color: #1D3557;
+  }
+
+  /* Индикаторы прочтения в стиле WhatsApp */
+  .read-status {
+    display: flex;
+    align-items: center;
+  }
+
+  .read-status svg {
+    width: 16px;
+    height: 11px;
+  }
+
+  /* Стиль для прочитанных сообщений (две галочки) */
+  .read-status.read {
+    color: #040404; /* Голубой цвет как в WhatsApp */
+  }
+  .read-status.read svg {
+    width: 16px;
+    height: 11px;
+  }
+
+  /* Стиль для непрочитанных сообщений (одна галочка) */
+  .read-status.unread {
+    color: #040404;
+  }
+  .read-status.unread svg {
+    width: 14px;
+    height: 11px;
+  }
+
+  /* Время для отправленных (наших) сообщений - слева */
+  .sent-time {
+    left: 10px;
+  }
+
+  /* Время для полученных сообщений - справа */
+  .received-time {
+    right: 10px;
+  }
+
+  /* Сами сообщения */
+  .message {
+    padding: 10px 15px; /* Отступы вокруг текста */
+    border-radius: 18px;
+    max-width: 65%; /* Максимальная ширина сообщения */
+    width: auto; /* Ширина по содержимому */
+    word-wrap: break-word; /* Перенос длинных слов */
+    position: relative; /* Для позиционирования футера */
+    padding-bottom: 25px; /* Место для футера */
+    box-sizing: border-box; /* Чтобы padding не увеличивал размер */
+    display: inline-block; /* Сжимается по содержимому */
+  }
+
+  .sent {
+    background: #94F0D3;
+    color: #76536B;
+    border-bottom-right-radius: 5px; /* Эффект пузыря */
+  }
+
+  .received {
+    background: #94CCF0;
+    color: #76536B;
+    border-bottom-left-radius: 5px; /* Эффект пузыря */
+  }
+
+  .message-footer {
+    position: absolute;
+    bottom: 5px;
+    right: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  
+  /* Для наших сообщений - справа */
+  .sent .message-footer {
+    right: 10px;
+  }
+  
+  .input-box {
+    padding: 8px;
+    background-color: #F0FAEF;
+    display: flex;
+    margin: 8px;
+    border-radius: 25px;
+  }
+  
+  .input-box input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    font-size: 16px;
+    background-color: transparent;
+    outline: none;
+  }
+  
+  .profile-pic {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+  }
+  
+  .menu-button {
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .menu-button:hover {
+    opacity: 0.8;
+  }
+  
+  .menu-button:active {
+    transform: scale(0.95);
+  }
+  
+  .menu-line {
+    width: 40px;
+    height: 12px;
+    background: #FDD367;
+    border-radius: 10px;
+  }
+  
+  .input-box {
+    padding: 8px;
+    background-color: #F0FAEF;
+    display: flex;
+    margin: 8px;
+    border-radius: 25px;
+    align-items: center;
+  }
+  
+  .input-box input {
+    flex-grow: 1;
+    padding: 10px;
+    border: none;
+    font-size: 16px;
+    background-color: transparent;
+    outline: none;
+  }
+  
+  .send-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #FDD367;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-left: 10px;
+    transition: background-color 0.2s;
+  }
+  
+  .send-button:hover {
+    background-color: #ffcb4f;
+  }
+  
+  .send-button:active {
+    background-color: #ffb81d;
+  }
+
+  .options-container {
+    position: relative;
+  }
+
+  /* Стили для кнопки с тремя точками */
+.options-button {
+  background: transparent;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  margin-right: 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.options-button:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  border-radius: 50%;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: #306748;
+  border-radius: 50%;
+  margin: 2px 0;
+}
+
+/* Стили для выпадающего меню */
+.options-menu {
+  width: 190px;
+  height: 86px;
+  background: #306748;
+  border-radius: 40px;
+  position: absolute;
+  bottom: 45px;
+  left: -80px;
+  display: none; /* По умолчанию скрыто */
+  flex-direction: column;
+  justify-content: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 100;
+  animation: fadeIn 0.2s ease-in-out;
+  padding: 5px 0;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.options-menu.visible {
+  display: flex;
+}
+/* Стили для кнопок внутри меню */
+.option-btn {
+  background: transparent;
+  border: none;
+  color: #FDD367;
+  font-size: 24px;
+  font-family: 'Konkhmer Sleokchher', cursive;
+  padding: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.option-btn:hover {
+  background-color: rgba(253, 211, 103, 0.1);
+}
+/* Стиль для кнопки редактирования (карандаш) */
+.edit-button {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  opacity: 0; /* Скрыт по умолчанию */
+  transition: opacity 0.2s, background-color 0.2s;
+  border: none;
+}
+
+/* Показываем кнопку редактирования при наведении на сообщение */
+.message.sent:hover .edit-button {
+  opacity: 1;
+}
+
+.edit-button:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Стиль для всплывающего зеленого виджета */
+.edit-widget {
+  position: absolute;
+  top: -40px;
+  right: 10px;
+  background-color:#306748;
+  ;
+  border-radius: 10px;
+  padding: 8px;
+  display: flex;
+  gap: 5px;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+/* Показываем виджет */
+.edit-widget.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Стрелка для виджета */
+.edit-widget:after {
+  content: "";
+  position: absolute;
+  bottom: -10px;
+  right: 10px;
+  border-width: 10px 10px 0;
+  border-style: solid;
+  border-color: #306748 transparent transparent;
+}
+
+/* Стили для кнопок в виджете */
+.widget-button {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  color: #FDD367;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.edit-btn {
+  background-color: #306748;
+}
+
+.delete-btn {
+  background-color: #306748;
+}
+
+.widget-button:hover {
+  filter: brightness(1.1);
+}
+
+/* Стили для виджета удаления чата */
+.delete-chat-widget {
+  position: absolute;
+  top: 15px;
+  right: 60px;
+  background-color: #306748; /* Зеленый цвет */
+  border-radius: 10px;
+  padding: 8px;
+  z-index: 100;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s, visibility 0.2s;
+}
+
+/* Стрелка для виджета */
+.delete-chat-widget:after {
+  content: "";
+  position: absolute;
+  top: 8px;
+  right: -10px;
+  border-width: 10px 0 10px 10px;
+  border-style: solid;
+  border-color: transparent transparent transparent #306748;
+}
+
+/* Показываем виджет */
+.delete-chat-widget.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* Стиль для кнопки удаления чата */
+.delete-chat-btn {
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #306748; /* Красный цвет для кнопки удаления */
+  color: #FDD367;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.delete-chat-btn:hover {
+  background-color: #306748; /* Темно-красный при наведении */
+}
+
+/* Заголовок группы */
+.group-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  border-bottom: 1px solid #ccc;
+  background-color: #f9f9f9;
+  border-top-left-radius: 40px;
+  border-top-right-radius: 40px;
+}
+
+.group-info {
+  display: flex;
+  align-items: center;
+}
+
+.group-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.group-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.group-name {
+  font-weight: bold;
+  font-size: 18px;
+  color: #333;
+}
+
+.group-members {
+  font-size: 14px;
+  color: #666;
+}
+
+/* Стили для сообщений с именами и аватарами */
+.sender-info {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.sender-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.sender-name {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+/* Контейнер для сообщений в групповом чате */
+.message-container.received-container.group-message {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+
+.chat-item {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.chat-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chat-item.active {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-left: 3px solid #FDD367;
+}
+
+/* Иконка группы для группового чата */
+.chat-item.group-chat-item .chat-item-name img {
+  border: 2px solid #FDD367;
+}
+
+.delete-chat-widget {
+  display: none;
+  position: absolute;
+  top: 40px;
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.delete-chat-widget.visible {
+  display: block;
+}
+
+.delete-chat-btn {
+  background-color: #F44336;
+  color: white;
+  border: none;
+  padding: 8px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.delete-chat-btn:hover {
+  background-color: #D32F2F;
+}
