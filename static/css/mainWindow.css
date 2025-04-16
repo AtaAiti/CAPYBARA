@@ -721,3 +721,24 @@ body {
 .delete-chat-btn:hover {
   background-color: #D32F2F;
 }
+
+/* Стили для поисковой строки */
+.search-container input {
+  width: 400px;
+  height: 60px;
+  background-color: #FDD367;
+  border-radius: 25px;
+  color: #7E453D;
+  font-size: 32px;
+  font-weight: 400;
+  border: none;
+  padding: 0 20px;
+  text-align: center;
+  font-family: 'Konkhmer Sleokchher', cursive;
+  outline: none;
+}
+
+.search-container input::placeholder {
+  color: #7E453D;
+  opacity: 1;
+}
