@@ -18,11 +18,10 @@
     </div>
     
     <!-- Search bar -->
-    <!-- Search bar -->
-  <div class="search-container">
-    <input type="text" class="search-bar" placeholder="Search">
-    <button type="button" class="all-button">All</button>
-  </div>  
+    <div class="search-container">
+      <input type="text" class="search-bar" placeholder="Search">
+      <button type="button" class="all-button">All</button>
+    </div>  
     
     <!-- Filter tabs -->
   <div class="filter-tabs">
@@ -1172,6 +1171,237 @@
         sidebar.appendChild(chatItem);
       });
     }
+
+    // Function to fetch groups list from API
+    function fetchGroupsList() {
+      fetch('/get_user_groups')
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            updateGroupsList(data.groups);
+          } else {
+            console.error('Error fetching groups:', data.message);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching groups:', error);
+        });
+    }
+
+    // Function to update the sidebar with groups
+    function updateGroupsList(groups) {
+      const sidebar = document.querySelector('.sidebar');
+      
+      // Clear existing group chat items
+      const groupChatItems = sidebar.querySelectorAll('.chat-item[data-chat-type="group"]');
+      groupChatItems.forEach(item => item.remove());
+      
+      // Add each group to the sidebar
+      groups.forEach(group => {
+        const chatItem = document.createElement('div');
+        chatItem.className = 'chat-item group-chat-item';
+        chatItem.setAttribute('data-chat-type', 'group');
+        chatItem.setAttribute('data-group-id', group.id);
+        
+        chatItem.innerHTML = `
+          <div class="chat-item-name">
+            <img src="${group.avatar || 'https://placehold.co/49x49'}" alt="Group Avatar" />
+            <div>${group.name}</div>
+          </div>
+          <div class="chat-item-time"></div>
+        `;
+        
+        // Add click event for loading group chat
+        chatItem.addEventListener('click', function() {
+          document.querySelectorAll('.chat-item').forEach(chat => {
+            chat.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          const groupId = this.getAttribute('data-group-id');
+          loadGroupChat(groupId);
+        });
+        
+        sidebar.appendChild(chatItem);
+      });
+    }
+
+    // Вызовите fetchGroupsList() при загрузке страницы
+    document.addEventListener('DOMContentLoaded', function() {
+      // Существующий код загрузки друзей
+      fetchFriendsList();
+      
+      // Добавляем загрузку групп
+      fetchGroupsList();
+      
+      // Остальной код...
+    });
+
+    // Добавьте этот код в раздел <script>
+
+    // Функция поиска чатов
+    function searchChatsAndUsers() {
+      const searchInput = document.querySelector('.search-container input');
+      const searchTerm = searchInput.value.trim();
+      
+      if (!searchTerm) {
+        // Если поле поиска пустое, возвращаем обычный список чатов
+        fetchFriendsList();
+        fetchGroupsList();
+        return;
+      }
+    
+      // Очистим существующие результаты
+      const sidebar = document.querySelector('.sidebar');
+      sidebar.innerHTML = '';
+      
+      // Создаем индикатор загрузки
+      const loadingIndicator = document.createElement('div');
+      loadingIndicator.textContent = 'Поиск...';
+      loadingIndicator.style.padding = '15px';
+      loadingIndicator.style.textAlign = 'center';
+      sidebar.appendChild(loadingIndicator);
+      
+      // Выполняем запрос к API для поиска пользователей и групп
+      fetch(`/search_users?q=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+          // Удаляем индикатор загрузки
+          sidebar.removeChild(loadingIndicator);
+          
+          if (data.success) {
+            // Добавляем найденных пользователей в сайдбар
+            if (data.users && data.users.length > 0) {
+              const usersHeading = document.createElement('div');
+              usersHeading.className = 'search-result-heading';
+              usersHeading.style.padding = '10px';
+              usersHeading.style.fontWeight = 'bold';
+              usersHeading.style.backgroundColor = '#f0f0f0';
+              sidebar.appendChild(usersHeading);
+              
+              data.users.forEach(user => {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item';
+                chatItem.setAttribute('data-chat-type', 'direct');
+                chatItem.setAttribute('data-user-id', user.id);
+                
+                chatItem.innerHTML = `
+                  <div class="chat-item-name">
+                    <img src="${user.avatar || 'https://placehold.co/49x49'}" alt="avatar" />
+                    <div>${user.name}</div>
+                  </div>
+                `;
+                
+                // Добавляем обработчик клика
+                chatItem.addEventListener('click', function() {
+                  document.querySelectorAll('.chat-item').forEach(chat => {
+                    chat.classList.remove('active');
+                  });
+                  this.classList.add('active');
+                  
+                  const userId = this.getAttribute('data-user-id');
+                  const userName = this.querySelector('.chat-item-name div').textContent.trim();
+                  
+                  document.querySelector('.chat-messages').innerHTML = '';
+                  loadDirectChat(userId, userName);
+                });
+                
+                sidebar.appendChild(chatItem);
+              });
+            }
+            
+            // Добавляем найденные группы в сайдбар, если они есть
+            if (data.groups && data.groups.length > 0) {
+              const groupsHeading = document.createElement('div');
+              groupsHeading.className = 'search-result-heading';
+              groupsHeading.style.padding = '10px';
+              groupsHeading.style.fontWeight = 'bold';
+              groupsHeading.style.backgroundColor = '#f0f0f0';
+              sidebar.appendChild(groupsHeading);
+              
+              data.groups.forEach(group => {
+                const chatItem = document.createElement('div');
+                chatItem.className = 'chat-item group-chat-item';
+                chatItem.setAttribute('data-chat-type', 'group');
+                chatItem.setAttribute('data-group-id', group.id);
+                
+                chatItem.innerHTML = `
+                  <div class="chat-item-name">
+                    <img src="${group.avatar || 'https://placehold.co/49x49'}" alt="Group Avatar" />
+                    <div>${group.name}</div>
+                  </div>
+                `;
+                
+                // Добавляем обработчик клика
+                chatItem.addEventListener('click', function() {
+                  document.querySelectorAll('.chat-item').forEach(chat => {
+                    chat.classList.remove('active');
+                  });
+                  this.classList.add('active');
+                  
+                  const groupId = this.getAttribute('data-group-id');
+                  loadGroupChat(groupId);
+                });
+                
+                sidebar.appendChild(chatItem);
+              });
+            }
+            
+            // Если ничего не найдено
+            if ((!data.users || data.users.length === 0) && (!data.groups || data.groups.length === 0)) {
+              const noResults = document.createElement('div');
+              noResults.textContent = 'Ничего не найдено';
+              noResults.style.padding = '15px';
+              noResults.style.textAlign = 'center';
+              noResults.style.color = '#666';
+              sidebar.appendChild(noResults);
+            }
+          } else {
+            // Показываем сообщение об ошибке
+            showNotification('Ошибка поиска: ' + data.message, true);
+            // Возвращаем исходные списки
+            fetchFriendsList();
+            fetchGroupsList();
+          }
+        })
+        .catch(error => {
+          console.error('Search error:', error);
+          showNotification('Ошибка поиска. Пожалуйста, попробуйте позже.', true);
+          sidebar.removeChild(loadingIndicator);
+          // Возвращаем исходные списки
+          fetchFriendsList();
+          fetchGroupsList();
+        });
+    }
+    
+    // Добавляем обработчики событий для поиска
+    document.addEventListener('DOMContentLoaded', function() {
+      const searchInput = document.querySelector('.search-container input');
+      const searchButton = document.querySelector('.search-container .all-button');
+      
+      // Добавляем класс к полю поиска (он отсутствует в HTML)
+      searchInput.classList.add('search-input');
+      
+      // Поиск при нажатии на кнопку
+      searchButton.addEventListener('click', function() {
+        searchChatsAndUsers();
+      });
+      
+      // Поиск при нажатии Enter в поле поиска
+      searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+          searchChatsAndUsers();
+        }
+      });
+      
+      // Сброс результатов поиска при очистке поля
+      searchInput.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+          fetchFriendsList();
+          fetchGroupsList();
+        }
+      });
+    });
   </script>
 </body>
 </html>

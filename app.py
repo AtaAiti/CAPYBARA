@@ -520,39 +520,59 @@ def search_users():
     try:
         current_user = get_current_user()
         query = request.args.get('q', '')
-        group_id = request.args.get('group_id', type=int)
         
-        if not query or not group_id:
-            return jsonify({'success': False, 'message': 'Missing query or group ID'}), 400
+        if not query:
+            return jsonify({'success': False, 'message': 'Missing search query'}), 400
             
-        # Get all members of the group to exclude them
-        group_members = db.session.query(GroupMember.user_id).filter_by(group_id=group_id).all()
-        member_ids = [m.user_id for m in group_members]
-        
-        # Find users that match the query and are not already in the group
+        # Поиск пользователей
         users = User.query.filter(
-            User.id.notin_(member_ids),
+            User.id != current_user.id,
             (User.name.ilike(f'%{query}%') | 
              User.email.ilike(f'%{query}%') | 
              User.nickname.ilike(f'%{query}%'))
         ).all()
         
-        user_list = []
+        # Формируем список найденных пользователей
+        users_list = []
         for user in users:
-            user_list.append({
+            # Проверяем, является ли пользователь другом
+            is_friend = Friendship.query.filter_by(
+                user_id=current_user.id, 
+                friend_id=user.id
+            ).first() is not None
+            
+            users_list.append({
                 'id': user.id,
                 'name': user.nickname or user.name,
                 'email': user.email,
-                'avatar': user.avatar
+                'avatar': user.avatar,
+                'is_friend': is_friend
+            })
+        
+        # Поиск групп
+        groups = Group.query.join(GroupMember).filter(
+            GroupMember.user_id == current_user.id,
+            Group.name.ilike(f'%{query}%')
+        ).all()
+        
+        # Формируем список найденных групп
+        groups_list = []
+        for group in groups:
+            groups_list.append({
+                'id': group.id,
+                'name': group.name,
+                'avatar': group.avatar,
+                'member_count': GroupMember.query.filter_by(group_id=group.id).count()
             })
             
         return jsonify({
             'success': True,
-            'users': user_list
+            'users': users_list,
+            'groups': groups_list
         })
         
     except Exception as e:
-        print(f"Search users error: {str(e)}")
+        print(f"Search error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
 @app.route('/add_group_member', methods=['POST'])
@@ -753,7 +773,7 @@ def get_group_messages(group_id):
                 'sender_id': message.sender_id,
                 'sender_name': sender.name,
                 'content': message.content,
-                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
+                'created_at': message.created_at.strftime('%Y-%м-%d %H:%M:%S')
             })
         
         return jsonify({
@@ -793,6 +813,49 @@ def delete_direct_chat():
         db.session.rollback()
         print(f"Delete direct chat error: {str(e)}")
         return jsonify({'success': False, 'message': f'Error deleting chat: {str(e)}'}), 500
+
+@app.route('/get_user_groups', methods=['GET'])
+@login_required
+def get_user_groups():
+    try:
+        current_user = get_current_user()
+        
+        # Get groups in which the user is a member
+        groups_query = db.session.query(Group).join(GroupMember).filter(
+            GroupMember.user_id == current_user.id
+        ).all()
+        
+        groups_list = []
+        for group in groups_query:
+            # Count members
+            member_count = GroupMember.query.filter_by(group_id=group.id).count()
+            
+            # Check if current user is admin
+            user_membership = GroupMember.query.filter_by(
+                user_id=current_user.id,
+                group_id=group.id
+            ).first()
+            
+            is_admin = user_membership.is_admin if user_membership else False
+            
+            groups_list.append({
+                'id': group.id,
+                'name': group.name,
+                'description': group.description,
+                'avatar': group.avatar,
+                'member_count': member_count,
+                'is_admin': is_admin,
+                'is_creator': (group.creator_id == current_user.id)
+            })
+        
+        return jsonify({
+            'success': True,
+            'groups': groups_list
+        })
+        
+    except Exception as e:
+        print(f"Get user groups error: {str(e)}")
+        return jsonify({'success': False, 'message': str(e)}), 500
 
 # Обработчики событий WebSocket
 @socketio.on('connect')
