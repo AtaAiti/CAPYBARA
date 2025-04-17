@@ -773,7 +773,7 @@ def get_group_messages(group_id):
                 'sender_id': message.sender_id,
                 'sender_name': sender.name,
                 'content': message.content,
-                'created_at': message.created_at.strftime('%Y-%м-%d %H:%M:%S')
+                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
             })
         
         return jsonify({
@@ -862,7 +862,11 @@ def get_user_groups():
 def handle_connect():
     if 'user_id' in session:
         current_user = get_current_user()
+        # Fixed status message with proper content
         emit('status', {'msg': f'{current_user.name} connected'})
+    else:
+        # Add a message even for anonymous connections
+        emit('status', {'msg': 'New connection established'})
 
 @socketio.on('disconnect')
 def handle_disconnect():
@@ -887,12 +891,8 @@ def handle_leave(data):
 @socketio.on('message')
 def handle_message(data):
     current_user = get_current_user()
-    room = data.get('room')
     message_content = data.get('message')
-    recipient_type = data.get('recipient_type', 'user')  # 'user' or 'group'
-    
-    if not message_content:
-        return
+    recipient_type = data.get('recipient_type', 'user')
     
     # Create new message in DB
     new_message = Message(
@@ -909,10 +909,14 @@ def handle_message(data):
         new_message.group_id = group_id
     
     try:
+        # This is where the message is saved to data.db
         db.session.add(new_message)
         db.session.commit()
         
-        # Emit message to room
+        # Get the room name from the data
+        room = data.get('room')
+
+        # After saving, broadcast to room members
         emit('new_message', {
             'id': new_message.id,
             'sender_id': current_user.id,
