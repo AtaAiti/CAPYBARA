@@ -34,8 +34,12 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Обработчик статусных сообщений
     socket.on('status', (data) => {
-        console.log('Status message received:', data);
-        displayStatusMessage(data.msg);
+        if (data && data.msg && data.msg.trim()) {
+            // Не показывать сообщения о входе в комнату
+            if (!/joined room/.test(data.msg)) {
+                displayStatusMessage(data.msg);
+            }
+        }
     });
     
     // Обработчик новых сообщений
@@ -162,28 +166,17 @@ function joinGroupRoom(groupId) {
 function sendMessage(message, roomId, recipientType, recipientId) {
     return ensureSocketReady()
         .then(() => {
-            if (!roomId) {
-                throw new Error('Cannot send message: invalid room ID');
-            }
-            
             const data = {
                 message: message,
-                room: roomId
+                room: roomId,
+                recipient_type: recipientType
             };
-            
-            if (recipientType === 'user') {
-                data.recipient_type = 'user';
-                data.recipient_id = recipientId;
+            if (recipientType === 'group') {
+                data.group_id = recipientId; // <--- вот так!
             } else {
-                data.recipient_type = 'group';
-                data.group_id = recipientId;
+                data.recipient_id = recipientId;
             }
-            
-            console.log('Sending message data:', data);
             socket.emit('message', data);
-        })
-        .catch(error => {
-            console.error('Cannot send message:', error);
         });
 }
 

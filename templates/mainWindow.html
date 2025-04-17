@@ -33,219 +33,23 @@
     </div>  
     
     <!-- Filter tabs -->
-  <div class="filter-tabs">
-    <button type="button" class="tab">All</button>
-    <button type="button" class="tab">Unread</button>
-    <button type="button" class="tab">Read</button>
-  </div>
+    <div class="filter-tabs">
+      <button type="button" class="tab">All</button>
+      <button type="button" class="tab">Unread</button>
+      <button type="button" class="tab">Read</button>
+    </div>
     
     <!-- Main content area -->
     <div class="content">
-      <!-- Chat list -->
+      <!-- Chat list (sidebar) -->
       <div class="sidebar">
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Dair</div>
-          </div>
-          <div class="chat-item-time">18:00</div>
-        </div>
-        
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Nurdin</div>
-          </div>
-          <div class="chat-item-time">12:50</div>
-        </div>
-        
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Yntymak</div>
-          </div>
-          <div class="chat-item-time">11:40</div>
-        </div>
-        
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Eleonora</div>
-          </div>
-          <div class="chat-item-time">18:00</div>
-        </div>
-        
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Alienora</div>
-          </div>
-          <div class="chat-item-time">23:00</div>
-        </div>
-        
-            <!-- Добавьте этот элемент в список чатов (sidebar) -->
-        <div class="chat-item group-chat-item" data-chat-type="group" data-group-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="Group Avatar" />
-            <div>AIT-24 Group</div>
-          </div>
-          <div class="chat-item-time">18:00</div>
-        </div>
-        
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Zaryl</div>
-          </div>
-          <div class="chat-item-time">18:50</div>
-        </div>
-        
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Atai</div>
-          </div>
-          <div class="chat-item-time">18:00</div>
-        </div>
-
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Omur</div>
-          </div>
-          <div class="chat-item-time">13:00</div>
-        </div>
-
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Aman</div>
-          </div>
-          <div class="chat-item-time">23:50</div>
-        </div>
-
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Sasha</div>
-          </div>
-          <div class="chat-item-time">14:00</div>
-        </div>
-
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Aktan</div>
-          </div>
-          <div class="chat-item-time">16:40</div>
-        </div>
-
-        <div class="chat-item" data-chat-type="direct" data-user-id="1">
-          <div class="chat-item-name">
-            <img src="https://placehold.co/49x49" alt="avatar" />
-            <div>Tynchtyk</div>
-          </div>
-          <div class="chat-item-time">18:00</div>
-        </div>
+        <!-- Динамически наполняется через JS: updateFriendsList и updateGroupsList -->
       </div>
       
       <!-- Chat messages -->
       <div class="chat-window">
-                <!-- Вставьте в начало div.chat-window, перед status-circle -->
-        <div class="group-header">
-          <div class="group-info">
-            <img src="https://placehold.co/50x50" alt="Group Image" class="group-avatar">
-            <div class="group-details">
-              <div class="group-name">AIT-24 Group</div>
-              <div class="group-members">15 members</div>
-            </div>
-          </div>
-        </div>
-        <button class="status-circle" aria-label="User Status" title="more"></button>
-        <div class="delete-chat-widget" id="deleteChatWidget">
-          <button class="delete-chat-btn">Delete Chat</button>
-        </div>
-        <div class="chat-messages">
-          <div class="date-label">03.03.2025</div>
-          
-          <!-- Наше сообщение - время слева -->
-          <div class="message-container sent-container">
-            <div class="message sent">
-              Hi
-              <div class="message-footer">
-                <span class="read-status read">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
-                    <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
-                  </svg>
-                </span>
-                <span class="message-time">16:04</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Чужое сообщение - время справа -->
-          <div class="message-container received-container">
-            <div class="message received">
-              Hello
-              <div class="message-footer">
-                <span class="message-time">16:04</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="message-container received-container">
-            <div class="message received">
-              Blabla
-              <div class="message-footer">
-                <span class="message-time">16:05</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="message-container received-container">
-            <div class="message received">
-              blabla
-              <div class="message-footer">
-                <span class="message-time">16:06</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="date-label">23.04.2025</div>
-          
-          <div class="message-container received-container">
-            <div class="message received">
-              Hello
-              <div class="message-footer">
-                <span class="message-time">16:04</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="message-container received-container">
-            <div class="message received">
-              Blabla?
-              <div class="message-footer">
-                <span class="message-time">16:04</span>
-              </div>
-            </div>
-          </div>
-          
-          <!-- Наши сообщения - непрочитанное -->
-          <div class="message-container sent-container">
-            <div class="message sent">
-              Bla!
-              <div class="message-footer">
-                <span class="read-status unread">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
-                    <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
-                  </svg>
-                </span>
-                <span class="message-time">16:05</span>
-              </div>
-            </div>
-          </div>
-        </div>
+        <!-- Динамически: group-header, status-circle, delete-chat-widget, chat-messages, input-box -->
+        <div class="chat-messages"></div>
         
         <div class="input-box">
           <div class="options-container">
@@ -254,14 +58,11 @@
                   <div class="dot"></div>
                   <div class="dot"></div>
               </button>
-              
-              <!-- Всплывающее меню (по умолчанию скрыто) -->
               <div class="options-menu" id="optionsMenu">
                   <button class="option-btn">Pictures</button>
                   <button class="option-btn">Videos</button>
               </div>
           </div>
-          
           <input type="text" placeholder="Type a message..." />
           <button type="button" class="send-button">
               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#306748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -413,24 +214,24 @@
       return container;
     }
 
-    // Использование функции при отправке сообщения
-    document.querySelector('.send-button').addEventListener('click', function() {
-      const input = document.querySelector('.input-box input');
-      const text = input.value.trim();
-  
-      if (text) {
-        // Создаем и добавляем сообщение в чат
-        const messagesContainer = document.querySelector('.chat-messages');
-        const newMessage = createMessage(text, true, false); // Наше сообщение, непрочитанное
-        messagesContainer.appendChild(newMessage);
+    // // Использование функции при отправке сообщения
+    // document.querySelector('.send-button').addEventListener('click', function() {
+    //   const input = document.querySelector('.input-box input');
+    //   const text = input.value.trim();
+      
+    //   if (text) {
+    //     // Создаем и добавляем сообщение в чат
+    //     const messagesContainer = document.querySelector('.chat-messages');
+    //     const newMessage = createMessage(text, true, false); // Наше сообщение, непрочитанное
+    //     messagesContainer.appendChild(newMessage);
     
-        // Очищаем поле ввода
-        input.value = '';
+    //     // Очищаем поле ввода
+    //     input.value = '';
     
-        // Прокручиваем чат вниз
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-    });
+    //     // Прокручиваем чат вниз
+    //     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    //   }
+    // });
 
         // Функция для переключения видимости виджета
     function toggleWidget(widget) {
@@ -943,50 +744,7 @@
       chatMessages.appendChild(dateLabel);
       
       // Добавляем примеры групповых сообщений
-      const messages = [
-        {
-          text: "Hello everyone!",
-          isSent: true,
-          isRead: true
-        },
-        {
-          text: "Hi! How's the project going?",
-          isSent: false,
-          senderName: "Aktan",
-          senderAvatar: "https://placehold.co/30x30/orange/white"
-        },
-        {
-          text: "We need to finish the UI design by tomorrow.",
-          isSent: false,
-          senderName: "Dair",
-          senderAvatar: "https://placehold.co/30x30/green/white"
-        },
-        {
-          text: "I've completed the database schema.",
-          isSent: true,
-          isRead: false
-        },
-        {
-          text: "Great job! I'll review it later today.",
-          isSent: false,
-          senderName: "Eleonora",
-          senderAvatar: "https://placehold.co/30x30/purple/white"
-        }
-      ];
       
-      // Добавляем сообщения в чат
-      messages.forEach(msg => {
-        const messageEl = createGroupMessage(
-          msg.text, 
-          msg.isSent, 
-          msg.isRead || false, 
-          msg.senderName || '', 
-          msg.senderAvatar || ''
-        );
-        chatMessages.appendChild(messageEl);
-      });
-      
-      // Прокручиваем чат вниз
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
     
@@ -1052,14 +810,8 @@
               // Send message via WebSocket
               sendMessage(text, roomId, chatType === 'group' ? 'group' : 'user', recipientId)
                 .then(() => {
-                  // Create and display message in UI (optimistic rendering)
-                  const messagesContainer = document.querySelector('.chat-messages');
-                  const newMessage = createMessage(text, true, false);
-                  messagesContainer.appendChild(newMessage);
-                  
-                  // Clear input and scroll to bottom
+                  // Только очищаем поле ввода, не добавляем сообщение вручную!
                   input.value = '';
-                  messagesContainer.scrollTop = messagesContainer.scrollHeight;
                 });
             }
           });
@@ -1115,12 +867,8 @@
                 // Add messages for this date
                 messagesByDate[date].forEach(msg => {
                   const isSent = msg.sender_id == currentUserId;
-                  const message = createMessage(
-                    msg.content, 
-                    isSent, 
-                    msg.is_read || false
-                  );
-                  chatMessages.appendChild(message);
+                  const                     message = createMessage(msg.content, isSent, msg.is_read || false);
+                                    chatMessages.appendChild(message);
                 });
               }
               
@@ -1192,32 +940,29 @@
             }
             
             if (data.success) {
-              // Group messages by date
+              // Группируем сообщения по дате (если нужно)
               const messagesByDate = groupMessagesByDate(data.messages);
-              
-              // Display messages
               for (const date in messagesByDate) {
-                // Add date separator
+                // Добавляем разделитель даты
                 const dateLabel = document.createElement('div');
                 dateLabel.className = 'date-label';
                 dateLabel.textContent = date;
                 chatMessages.appendChild(dateLabel);
-                
-                // Add messages for this date
+            
+                // Добавляем сообщения
                 messagesByDate[date].forEach(msg => {
                   const isSent = msg.sender_id == currentUserId;
-                  const message = createGroupMessage(
-                    msg.content, 
-                    isSent, 
+                  // Для группового чата всегда используем createGroupMessage
+                  const messageEl = createGroupMessage(
+                    msg.content,
+                    isSent,
                     msg.is_read || false,
-                    msg.sender_name || '',
-                    msg.sender_avatar || ''
+                    isSent ? '' : msg.sender_name,
+                    isSent ? '' : (msg.sender_avatar || '')
                   );
-                  chatMessages.appendChild(message);
+                  chatMessages.appendChild(messageEl);
                 });
               }
-              
-              // Scroll to bottom
               chatMessages.scrollTop = chatMessages.scrollHeight;
             } else {
               showNotification('Error loading messages: ' + data.message, true);
@@ -2100,6 +1845,20 @@ document.addEventListener('DOMContentLoaded', function() {
       setupGroupChatDoubleClickEvents();
     };
   }
+});
+
+    // Add this to your script section in mainWindow.html:
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle missing images gracefully
+    document.querySelectorAll('img').forEach(img => {
+        img.onerror = function() {
+            // Replace with a placeholder if image fails to load
+            this.src = 'https://placehold.co/' + 
+                (this.width || 50) + 'x' + (this.height || 50) + 
+                '/306748/FDD367?text=C';
+            this.onerror = null; // Prevent infinite loops
+        };
+    });
 });
   </script>
 
