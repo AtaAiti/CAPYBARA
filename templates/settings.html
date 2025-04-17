@@ -40,7 +40,7 @@
       rightPanel.classList.add('visible');
       
       // Загрузка через iframe с прозрачным фоном
-      rightPanel.innerHTML = `<iframe src="${pageUrl}" style="width:100%; height:100%; border:none; background: transparent;" title="${title}"></iframe>`;
+      rightPanel.innerHTML = `<iframe src="${pageUrl}" scrolling="no" style="width:100%; height:100%; border:none; background: transparent;" title="${title}"></iframe>`;
       
       // Добавляем кнопку закрытия
       const closeButton = document.createElement('button');

@@ -2,39 +2,44 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Konkhmer Sleokchher', cursive;
- }
+}
 
-/* Обновлённая стилизация кнопки с карандашом */
+/* Стиль для кнопки-карандаша */
 .edit-button {
   position: absolute;
   top: 10px;
   right: 15px;
-  width: 36px;
-  height: 36px;
-  background-color: #ff5500 !important; /* Яркий оранжевый */
+  width: 48px;  /* Увеличили с 36px до 48px */
+  height: 48px; /* Увеличили с 36px до 48px */
+  background-color: white !important; /* Добавили белый фон */
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   z-index: 9999 !important;
-  box-shadow: 0 3px 6px rgba(0,0,0,0.9);
-  border: 2px solid white;
+  border: 2px solid #333; /* Добавили заметную границу */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Добавили тень */
+  transition: all 0.2s ease;
 }
 
+/* Эффект при наведении */
 .edit-button:hover {
-  background-color: #ff7733 !important;
   transform: scale(1.1);
+  box-shadow: 0 3px 7px rgba(0,0,0,0.4);
 }
 
-/* Добавляем стиль для текстового символа карандаша */
-.pencil-text {
-  font-size: 22px;
-  color: white;
-  font-weight: bold;
-  line-height: 1;
+/* Эффект при нажатии */
+.edit-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
+/* Стиль для SVG */
+.edit-button svg {
+  width: 32px; /* Увеличили размер SVG */
+  height: 32px;
+}
 
 .container {
   width: 100%;
@@ -101,8 +106,8 @@ body {
 }
 
 .group-avatar {
-  width: 50px;
-  height: 50px;
+  width: 110px;
+  height: 110px;
   border-radius: 15px;
 }
 

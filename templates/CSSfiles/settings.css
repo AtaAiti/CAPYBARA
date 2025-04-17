@@ -107,25 +107,45 @@ html, body {
     cursor: pointer;
   }
   
-    /* Стили для правой панели */
+   
   .right-panel {
     position: absolute;
-    top: 0;
-    right: 0;
-    width: 50%;
-    height: 100%;
-    background-color: #FDD367; /* Цвет по умолчанию */
-    overflow-y: auto;
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+    top: -10px; /* Сохраняем то же положение */
+    right: 60px; /* Сохраняем то же положение */
+    width: calc(50% - 0px); /* Сохраняем ту же ширину */
+    height: calc(80% - 90px); /* Сохраняем ту же высоту */
+    background-color: #FDD367;
+    overflow: hidden; /* Меняем overflow-y: auto на overflow: hidden */
+    box-shadow: 0 0 15px rgba(0,0,0,0.2);
     display: none;
     z-index: 5;
-    border-radius: 20px 0 0 20px;
-    transition: background-color 0.5s ease; /* Плавное изменение цвета */
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    margin: 20px; /* Сохраняем те же отступы */
   }
   
   /* Видимость правой панели */
   .right-panel.visible {
     display: block;
+  }
+  
+    /* Стили для содержимого панели */
+  .right-panel iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 16px;
+    background: transparent;
+    overflow: hidden !important;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE и Edge */
+  }
+  
+  /* Скрываем скроллбары в Webkit браузерах (Chrome, Safari) */
+  .right-panel iframe::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
   }
   
   .profile-pic-container {
