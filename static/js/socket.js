@@ -67,18 +67,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Display message in the chat window
                 const messagesContainer = document.querySelector('.chat-messages');
                 
+                // 1. Получаем дату сообщения
+                const msgDate = new Date(data.timestamp);
+                const dateStr = msgDate.toLocaleDateString();
+
+                // 2. Проверяем, есть ли уже разделитель для этой даты
+                if (!messagesContainer.querySelector(`.date-label[data-date="${dateStr}"]`)) {
+                    const dateLabel = document.createElement('div');
+                    dateLabel.className = 'date-label';
+                    dateLabel.setAttribute('data-date', dateStr);
+                    dateLabel.textContent = dateStr;
+                    messagesContainer.appendChild(dateLabel);
+                }
+
                 if (chatType === 'group') {
-                    const message = createGroupMessage(
-                        data.content,
-                        isSentByMe,
-                        false, // not read yet
-                        isSentByMe ? '' : data.sender_name,
-                        isSentByMe ? '' : data.sender_avatar
-                    );
-                    messagesContainer.appendChild(message);
+                    // Проверяем, нет ли уже такого сообщения
+                    if (!messagesContainer.querySelector(`.message-container[data-message-id="${data.id}"]`)) {
+                        const message = createGroupMessage(
+                            data.content,
+                            isSentByMe,
+                            false, // not read yet
+                            isSentByMe ? '' : data.sender_name,
+                            isSentByMe ? '' : data.sender_avatar,
+                            data.id // <-- передаем id
+                        );
+                        messagesContainer.appendChild(message);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    }
                 } else {
-                    const message = createMessage(data.content, isSentByMe, false);
-                    messagesContainer.appendChild(message);
+                    if (!messagesContainer.querySelector(`.message-container[data-message-id="${data.id}"]`)) {
+                        const message = createMessage(data.content, isSentByMe, false, data.id);
+                        messagesContainer.appendChild(message);
+                    }
                 }
                 
                 // Scroll to bottom

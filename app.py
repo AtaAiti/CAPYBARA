@@ -857,6 +857,18 @@ def get_user_groups():
         print(f"Get user groups error: {str(e)}")
         return jsonify({'success': False, 'message': str(e)}), 500
 
+@app.route('/upload_attachment', methods=['POST'])
+@login_required
+def upload_attachment():
+    file = request.files.get('file')
+    if not file:
+        return jsonify({'success': False, 'message': 'No file uploaded'}), 400
+    filename = secure_filename(file.filename)
+    save_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(save_path)
+    url = f"/static/uploads/{filename}"
+    return jsonify({'success': True, 'url': url})
+
 # Обработчики событий WebSocket
 @socketio.on('connect')
 def handle_connect():

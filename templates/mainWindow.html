@@ -75,6 +75,8 @@
     </div>
   </div>
 
+  <input type="file" id="fileInput" style="display:none;" accept="image/*,video/*">
+
   <script>
     // Обработчик клика по кнопке меню
     document.getElementById('settingsButton').addEventListener('click', function() {
@@ -104,25 +106,85 @@
     // Обработчики для кнопок "Pictures" и "Videos"
     document.querySelectorAll('.option-btn').forEach(function(button) {
       button.addEventListener('click', function() {
-        alert('Выбрана опция: ' + this.textContent);
+        // alert('Выбрана опция: ' + this.textContent);
         // Здесь можно добавить логику для загрузки изображений или видео
       });
     });
 
+    // Получаем элементы
+    const fileInput = document.getElementById('fileInput');
+    const picturesBtn = document.querySelector('.option-btn:nth-child(1)');
+    const videosBtn = document.querySelector('.option-btn:nth-child(2)');
 
+    // Клик по Pictures — только картинки
+    picturesBtn.addEventListener('click', function() {
+        fileInput.accept = 'image/*';
+        fileInput.click();
+    });
 
+    // Клик по Videos — только видео
+    videosBtn.addEventListener('click', function() {
+        fileInput.accept = 'video/*';
+        fileInput.click();
+    });
 
+    // Обработка выбора файла
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (!file) return;
 
+        const formData = new FormData();
+        formData.append('file', file);
+
+        fetch('/upload_attachment', {
+            method: 'POST',
+            body: formData
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success && data.url) {
+                // Определяем активный чат
+                const activeChat = document.querySelector('.chat-item.active');
+                if (!activeChat) return;
+                const chatType = activeChat.getAttribute('data-chat-type');
+                const recipientId = chatType === 'group'
+                    ? activeChat.getAttribute('data-group-id')
+                    : activeChat.getAttribute('data-user-id');
+                const userId = document.body.getAttribute('data-user-id');
+                let roomPromise = chatType === 'group'
+                    ? joinGroupRoom(recipientId)
+                    : joinPrivateRoom(userId, recipientId);
+
+                roomPromise.then(roomId => {
+                    if (roomId) {
+                        // Формируем html для картинки или видео
+                        let content = '';
+                        if (file.type.startsWith('image/')) {
+                            content = `<img src="${data.url}" class="chat-image" style="max-width:200px;max-height:200px;">`;
+                        } else if (file.type.startsWith('video/')) {
+                            content = `<video src="${data.url}" controls class="chat-video" style="max-width:200px;max-height:200px;"></video>`;
+                        }
+                        sendMessage(content, roomId, chatType, recipientId);
+                    }
+                });
+            } else {
+                showNotification('Ошибка загрузки файла', true);
+            }
+        });
+    });
 
      // Функция для создания нового сообщения
-    function createMessage(text, isSent, isRead = false) {
+    function createMessage(text, isSent, isRead = false, messageId = null) {
       // Создаем основные контейнеры
       const container = document.createElement('div');
       container.className = isSent ? 'message-container sent-container' : 'message-container received-container';
+      if (messageId) {
+        container.setAttribute('data-message-id', messageId);
+      }
   
       const messageDiv = document.createElement('div');
       messageDiv.className = isSent ? 'message sent' : 'message received';
-      messageDiv.textContent = text;
+      messageDiv.innerHTML = text;
   
       // Если это наше сообщение, добавляем кнопку редактирования и виджет
       if (isSent) {
@@ -587,12 +649,14 @@
      * @param {string} senderName - имя отправителя (только для чужих сообщений)
      * @param {string} senderAvatar - путь к аватару отправителя (только для чужих сообщений)
      */
-    function createGroupMessage(text, isSent, isRead = false, senderName = '', senderAvatar = '') {
-      // Создаем основные контейнеры
+    function createGroupMessage(text, isSent, isRead = false, senderName = '', senderAvatar = '', messageId = null) {
       const container = document.createElement('div');
       container.className = isSent 
         ? 'message-container sent-container' 
         : 'message-container received-container group-message';
+      if (messageId) {
+        container.setAttribute('data-message-id', messageId);
+      }
       
       // Если сообщение от другого участника, добавляем информацию об отправителе
       if (!isSent) {
@@ -616,7 +680,7 @@
       // Создаем само сообщение
       const messageDiv = document.createElement('div');
       messageDiv.className = isSent ? 'message sent' : 'message received';
-      messageDiv.textContent = text;
+      messageDiv.innerHTML = text;
       
       // Если это наше сообщение, добавляем инструменты редактирования
       if (isSent) {
@@ -707,46 +771,6 @@
       return container;
     }
 
-
-        // Функция для загрузки группового чата
-    function loadGroupChat(groupId) {
-      const chatWindow = document.querySelector('.chat-window');
-      const chatMessages = document.querySelector('.chat-messages');
-      
-      // Очищаем текущие сообщения
-      chatMessages.innerHTML = '';
-      
-      // Проверяем, есть ли у нас уже заголовок группы
-      let groupHeader = document.querySelector('.group-header');
-      
-      // Если заголовка нет, создаем его
-      if (!groupHeader) {
-        groupHeader = document.createElement('div');
-        groupHeader.className = 'group-header';
-        groupHeader.innerHTML = `
-          <div class="group-info">
-            <img src="https://placehold.co/50x50" alt="Group Image" class="group-avatar">
-            <div class="group-details">
-              <div class="group-name">AIT-24 Group</div>
-              <div class="group-members">15 members</div>
-            </div>
-          </div>
-        `;
-        
-        // Вставляем заголовок перед всеми другими элементами
-        chatWindow.insertBefore(groupHeader, chatWindow.firstChild);
-      }
-      
-      // Добавляем дату
-      const dateLabel = document.createElement('div');
-      dateLabel.className = 'date-label';
-      dateLabel.textContent = '14.04.2025';
-      chatMessages.appendChild(dateLabel);
-      
-      // Добавляем примеры групповых сообщений
-      
-      chatMessages.scrollTop = chatMessages.scrollHeight;
-    }
     
         // Обработчик для клика по чату в списке
     document.addEventListener('DOMContentLoaded', function() {
@@ -819,6 +843,12 @@
       }
     });
 
+// Добавьте этот обработчик после обработчика .send-button
+document.querySelector('.input-box input').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    document.querySelector('.send-button').click();
+  }
+});
 
         // Функция для загрузки личного чата
     function loadDirectChat(userId, userName) {
@@ -847,7 +877,6 @@
         fetch(`/get_direct_messages/${userId}`)
           .then(response => response.json())
           .then(data => {
-            // Safely remove loading indicator
             if (loadingIndicator.parentNode === chatMessages) {
               chatMessages.removeChild(loadingIndicator);
             }
@@ -859,16 +888,22 @@
               // Display messages
               for (const date in messagesByDate) {
                 // Add date separator
-                const dateLabel = document.createElement('div');
-                dateLabel.className = 'date-label';
-                dateLabel.textContent = date;
-                chatMessages.appendChild(dateLabel);
+                if (!chatMessages.querySelector(`.date-label[data-date="${date}"]`)) {
+                  const dateLabel = document.createElement('div');
+                  dateLabel.className = 'date-label';
+                  dateLabel.setAttribute('data-date', date);
+                  dateLabel.textContent = date;
+                  chatMessages.appendChild(dateLabel);
+                }
                 
                 // Add messages for this date
                 messagesByDate[date].forEach(msg => {
-                  const isSent = msg.sender_id == currentUserId;
-                  const                     message = createMessage(msg.content, isSent, msg.is_read || false);
-                                    chatMessages.appendChild(message);
+                  // Проверяем, нет ли уже такого сообщения
+                  if (!chatMessages.querySelector(`.message-container[data-message-id="${msg.id}"]`)) {
+                    const isSent = msg.sender_id == currentUserId;
+                    const message = createMessage(msg.content, isSent, msg.is_read || false, msg.id);
+                    chatMessages.appendChild(message);
+                  }
                 });
               }
               
@@ -934,7 +969,6 @@
         fetch(`/get_group_messages/${groupId}`)
           .then(response => response.json())
           .then(data => {
-            // Safely remove loading indicator
             if (loadingIndicator.parentNode === chatMessages) {
               chatMessages.removeChild(loadingIndicator);
             }
@@ -944,23 +978,29 @@
               const messagesByDate = groupMessagesByDate(data.messages);
               for (const date in messagesByDate) {
                 // Добавляем разделитель даты
-                const dateLabel = document.createElement('div');
-                dateLabel.className = 'date-label';
-                dateLabel.textContent = date;
-                chatMessages.appendChild(dateLabel);
+                if (!chatMessages.querySelector(`.date-label[data-date="${date}"]`)) {
+                  const dateLabel = document.createElement('div');
+                  dateLabel.className = 'date-label';
+                  dateLabel.setAttribute('data-date', date);
+                  dateLabel.textContent = date;
+                  chatMessages.appendChild(dateLabel);
+                }
             
                 // Добавляем сообщения
                 messagesByDate[date].forEach(msg => {
-                  const isSent = msg.sender_id == currentUserId;
-                  // Для группового чата всегда используем createGroupMessage
-                  const messageEl = createGroupMessage(
-                    msg.content,
-                    isSent,
-                    msg.is_read || false,
-                    isSent ? '' : msg.sender_name,
-                    isSent ? '' : (msg.sender_avatar || '')
-                  );
-                  chatMessages.appendChild(messageEl);
+                  // Проверяем, нет ли уже такого сообщения
+                  if (!chatMessages.querySelector(`.message-container[data-message-id="${msg.id}"]`)) {
+                    const isSent = msg.sender_id == currentUserId;
+                    const messageEl = createGroupMessage(
+                      msg.content,
+                      isSent,
+                      msg.is_read || false,
+                      isSent ? '' : msg.sender_name,
+                      isSent ? '' : (msg.sender_avatar || ''),
+                      msg.id
+                    );
+                    chatMessages.appendChild(messageEl);
+                  }
                 });
               }
               chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -1860,6 +1900,46 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     });
 });
+
+    document.addEventListener('click', function(event) {
+      // Проверяем, кликнули ли по картинке в сообщении
+      if (event.target.classList.contains('chat-image')) {
+        // Создаем модальное окно
+        let modal = document.getElementById('imageModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'imageModal';
+          modal.style.position = 'fixed';
+          modal.style.top = 0;
+          modal.style.left = 0;
+          modal.style.width = '100vw';
+          modal.style.height = '100vh';
+          modal.style.background = 'rgba(0,0,0,0.8)';
+          modal.style.display = 'flex';
+          modal.style.alignItems = 'center';
+          modal.style.justifyContent = 'center';
+          modal.style.zIndex = 2000;
+          modal.style.cursor = 'zoom-out';
+    
+          // Картинка для увеличенного просмотра
+          const img = document.createElement('img');
+          img.style.maxWidth = '90vw';
+          img.style.maxHeight = '90vh';
+          img.id = 'modalImage';
+          modal.appendChild(img);
+    
+          // Закрытие по клику
+          modal.addEventListener('click', function() {
+            modal.style.display = 'none';
+          });
+    
+          document.body.appendChild(modal);
+        }
+        // Устанавливаем src выбранной картинки
+        modal.querySelector('#modalImage').src = event.target.src;
+        modal.style.display = 'flex';
+      }
+    });
   </script>
 
   <style>
@@ -1980,6 +2060,14 @@ document.addEventListener('DOMContentLoaded', function() {
       border: 1px solid #ccc;
       box-sizing: border-box;
       font-family: 'Konkhmer Sleokchher', cursive;
+    }
+
+    #imageModal {
+      transition: opacity 0.2s;
+    }
+    #imageModal img {
+      border-radius: 10px;
+      box-shadow: 0 0 30px #000;
     }
   </style>
 </body>
