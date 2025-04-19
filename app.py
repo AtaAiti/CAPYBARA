@@ -734,8 +734,7 @@ def get_direct_messages(user_id):
                 'sender_id': message.sender_id,
                 'sender_name': sender.name,
                 'content': message.content,
-                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'is_read': message.is_read 
+                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
             })
         
         return jsonify({
@@ -774,8 +773,7 @@ def get_group_messages(group_id):
                 'sender_id': message.sender_id,
                 'sender_name': sender.name,
                 'content': message.content,
-                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-                'is_read': message.is_read 
+                'created_at': message.created_at.strftime('%Y-%m-%d %H:%M:%S')
             })
         
         return jsonify({
@@ -951,7 +949,6 @@ def handle_message(data):
 # Add corresponding server-side handler in app.py
 @socketio.on('mark_read')
 def handle_mark_read(data):
-    print('mark_read called:', data)
     message_id = data.get('message_id')
     if message_id:
         message = Message.query.get(message_id)
