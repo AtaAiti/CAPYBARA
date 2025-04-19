@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (data && data.msg && data.msg.trim()) {
             // Не показывать сообщения о входе в комнату
             if (!/joined room/.test(data.msg)) {
-                displayStatusMessage(data.msg);
+                // displayStatusMessage(data.msg);
             }
         }
     });
@@ -300,13 +300,21 @@ function markMessageAsRead(messageId) {
 }
 
 socket.on('message_read', (data) => {
-    // Update UI for read messages
     const messageElement = document.querySelector(`.message-container[data-message-id="${data.message_id}"]`);
     if (messageElement) {
         const readStatus = messageElement.querySelector('.read-status');
         if (readStatus) {
-            readStatus.classList.remove('unread');
+            readStatus.innerHTML = '✔✔';
+            readStatus.classList.remove('delivered');
             readStatus.classList.add('read');
         }
     }
+});
+
+// При загрузке сообщений (loadDirectChat/loadGroupChat)
+messagesByDate[date].forEach(msg => {
+  // ...создание сообщения...
+  if (!msg.is_read && msg.sender_id != currentUserId) {
+    markMessageAsRead(msg.id); // Отправляем на сервер, что сообщение прочитано
+  }
 });
