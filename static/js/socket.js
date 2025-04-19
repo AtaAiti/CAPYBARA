@@ -1,3 +1,4 @@
+
 // Increase timeout and add reconnection options
 let socket = io.connect(window.location.protocol + '//' + document.domain + ':' + location.port, {
     reconnection: true,
