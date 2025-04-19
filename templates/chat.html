@@ -1,0 +1,986 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Capybara Messenger</title>
+  <link href="https://fonts.googleapis.com/css2?family=Konkhmer+Sleokchher&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/CAPYBARA/templates/CSSfiles/chat.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Menu button and Profile picture -->
+    <img src="capybara-logo.png" alt="Profile" class="profile-pic">
+    <div class="menu-button" id="settingsButton" title="Open Settings">
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+      <div class="menu-line"></div>
+    </div>
+    
+    <!-- Search bar -->
+    <!-- Search bar -->
+  <div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search">
+    <button type="button" class="all-button">All</button>
+  </div>  
+    
+    <!-- Filter tabs -->
+  <div class="filter-tabs">
+    <button type="button" class="tab">All</button>
+    <button type="button" class="tab">Unread</button>
+    <button type="button" class="tab">Read</button>
+  </div>
+    
+    <!-- Main content area -->
+    <div class="content">
+      <!-- Chat list -->
+      <div class="sidebar">
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Dair</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Nurdin</div>
+          </div>
+          <div class="chat-item-time">12:50</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Yntymak</div>
+          </div>
+          <div class="chat-item-time">11:40</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Eleonora</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Alienora</div>
+          </div>
+          <div class="chat-item-time">23:00</div>
+        </div>
+        
+            <!-- Добавьте этот элемент в список чатов (sidebar) -->
+        <div class="chat-item group-chat-item" data-chat-type="group" data-group-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="Group Avatar" />
+            <div>AIT-24 Group</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Zaryl</div>
+          </div>
+          <div class="chat-item-time">18:50</div>
+        </div>
+        
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Atai</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Omur</div>
+          </div>
+          <div class="chat-item-time">13:00</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Aman</div>
+          </div>
+          <div class="chat-item-time">23:50</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Sasha</div>
+          </div>
+          <div class="chat-item-time">14:00</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Aktan</div>
+          </div>
+          <div class="chat-item-time">16:40</div>
+        </div>
+
+        <div class="chat-item" data-chat-type="direct" data-user-id="1">
+          <div class="chat-item-name">
+            <img src="https://placehold.co/49x49" alt="avatar" />
+            <div>Tynchtyk</div>
+          </div>
+          <div class="chat-item-time">18:00</div>
+        </div>
+      </div>
+      
+      <!-- Chat messages -->
+      <div class="chat-window">
+                <!-- Вставьте в начало div.chat-window, перед status-circle -->
+        <div class="group-header">
+          <div class="group-info">
+            <img src="https://placehold.co/50x50" alt="Group Image" class="group-avatar">
+            <div class="group-details">
+              <div class="group-name">AIT-24 Group</div>
+              <div class="group-members">15 members</div>
+            </div>
+          </div>
+        </div>
+        <button class="status-circle" aria-label="User Status" title="more"></button>
+        <div class="delete-chat-widget" id="deleteChatWidget">
+          <button class="delete-chat-btn">Delete Chat</button>
+        </div>
+        <div class="chat-messages">
+          <div class="date-label">03.03.2025</div>
+          
+          <!-- Наше сообщение - время слева -->
+          <div class="message-container sent-container">
+            <div class="message sent">
+              Hi
+              <div class="message-footer">
+                <span class="read-status read">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
+                    <path d="M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Чужое сообщение - время справа -->
+          <div class="message-container received-container">
+            <div class="message received">
+              Hello
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              Blabla
+              <div class="message-footer">
+                <span class="message-time">16:05</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              blabla
+              <div class="message-footer">
+                <span class="message-time">16:06</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="date-label">23.04.2025</div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              Hello
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <div class="message-container received-container">
+            <div class="message received">
+              Blabla?
+              <div class="message-footer">
+                <span class="message-time">16:04</span>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Наши сообщения - непрочитанное -->
+          <div class="message-container sent-container">
+            <div class="message sent">
+              Bla!
+              <div class="message-footer">
+                <span class="read-status unread">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="11" viewBox="0 0 16 12">
+                    <path d="M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z" fill="currentColor"/>
+                  </svg>
+                </span>
+                <span class="message-time">16:05</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="input-box">
+          <div class="options-container">
+              <button type="button" class="options-button">
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+                  <div class="dot"></div>
+              </button>
+              
+              <!-- Всплывающее меню (по умолчанию скрыто) -->
+              <div class="options-menu" id="optionsMenu">
+                  <button class="option-btn">Pictures</button>
+                  <button class="option-btn">Videos</button>
+              </div>
+          </div>
+          
+          <input type="text" placeholder="Type a message..." />
+          <button type="button" class="send-button">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#306748" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Обработчик клика по кнопке меню
+    document.getElementById('settingsButton').addEventListener('click', function() {
+      // Переход на страницу настроек
+      window.location.href = 'settings.html';
+    });
+    // Код для управления выпадающим меню с опциями
+    document.querySelector('.options-button').addEventListener('click', function(event) {
+      const menu = document.getElementById('optionsMenu');
+      menu.classList.toggle('visible');
+      event.stopPropagation(); // Предотвращаем "всплытие" события
+    });
+  
+    // Закрытие меню при клике в любом месте документа
+    document.addEventListener('click', function(event) {
+      const menu = document.getElementById('optionsMenu');
+      if (menu.classList.contains('visible')) {
+        menu.classList.remove('visible');
+      }
+    });
+  
+    // Предотвращаем закрытие меню при клике на самом меню
+    document.querySelector('.options-menu').addEventListener('click', function(event) {
+      event.stopPropagation();
+    });
+  
+    // Обработчики для кнопок "Pictures" и "Videos"
+    document.querySelectorAll('.option-btn').forEach(function(button) {
+      button.addEventListener('click', function() {
+        alert('Выбрана опция: ' + this.textContent);
+        // Здесь можно добавить логику для загрузки изображений или видео
+      });
+    });
+
+
+
+
+
+
+     // Функция для создания нового сообщения
+    function createMessage(text, isSent, isRead = false) {
+      // Создаем основные контейнеры
+      const container = document.createElement('div');
+      container.className = isSent ? 'message-container sent-container' : 'message-container received-container';
+  
+      const messageDiv = document.createElement('div');
+      messageDiv.className = isSent ? 'message sent' : 'message received';
+      messageDiv.textContent = text;
+  
+      // Если это наше сообщение, добавляем кнопку редактирования и виджет
+      if (isSent) {
+        // Создаем виджет с кнопками
+        const editWidget = document.createElement('div');
+        editWidget.className = 'edit-widget';
+    
+        const editBtn = document.createElement('button');
+        editBtn.className = 'widget-button edit-btn';
+        editBtn.textContent = 'Edit';
+    
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'widget-button delete-btn';
+        deleteBtn.textContent = 'Delete';
+    
+        editWidget.appendChild(editBtn);
+        editWidget.appendChild(deleteBtn);
+        messageDiv.appendChild(editWidget);
+    
+        // Добавляем кнопку-карандаш
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        `;
+    
+        // Обработчик клика по карандашу
+        editButton.addEventListener('click', function(e) {
+          e.stopPropagation(); // Останавливаем всплытие события
+          toggleWidget(editWidget);
+        });
+    
+        // Обработчики для кнопок в виджете
+        editBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          editMessage(messageDiv, text);
+          editWidget.classList.remove('visible');
+        });
+    
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          container.remove(); // Удаляем всё сообщение
+        });
+    
+        messageDiv.appendChild(editButton);
+      }
+  
+      // Создаем футер с временем и статусом
+      const footer = document.createElement('div');
+      footer.className = 'message-footer';
+  
+      // Добавляем текущее время
+      const time = document.createElement('span');
+      time.className = 'message-time';
+      const now = new Date();
+      time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
+                       now.getMinutes().toString().padStart(2, '0');
+  
+      // Если это наше сообщение, добавляем индикатор прочтения
+      if (isSent) {
+        const readStatus = document.createElement('span');
+        readStatus.className = isRead ? 'read-status read' : 'read-status unread';
+    
+        // Создаем SVG-иконку статуса
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '16');
+        svg.setAttribute('height', '11');
+        svg.setAttribute('viewBox', '0 0 16 12');
+    
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        if (isRead) {
+          path.setAttribute('d', 'M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
+        } else {
+          path.setAttribute('d', 'M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
+        }
+        path.setAttribute('fill', 'currentColor');
+    
+        svg.appendChild(path);
+        readStatus.appendChild(svg);
+        footer.appendChild(readStatus);
+      }
+  
+      footer.appendChild(time);
+      messageDiv.appendChild(footer);
+      container.appendChild(messageDiv);
+  
+      return container;
+    }
+
+    // Использование функции при отправке сообщения
+    document.querySelector('.send-button').addEventListener('click', function() {
+      const input = document.querySelector('.input-box input');
+      const text = input.value.trim();
+  
+      if (text) {
+        // Создаем и добавляем сообщение в чат
+        const messagesContainer = document.querySelector('.chat-messages');
+        const newMessage = createMessage(text, true, false); // Наше сообщение, непрочитанное
+        messagesContainer.appendChild(newMessage);
+    
+        // Очищаем поле ввода
+        input.value = '';
+    
+        // Прокручиваем чат вниз
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    });
+
+        // Функция для переключения видимости виджета
+    function toggleWidget(widget) {
+      widget.classList.toggle('visible');
+  
+      // Закрываем все другие виджеты
+      document.querySelectorAll('.edit-widget.visible').forEach(function(w) {
+        if (w !== widget) {
+          w.classList.remove('visible');
+        }
+      });
+  
+      // Закрываем виджет при клике в любом месте страницы
+      setTimeout(function() {
+        const clickHandler = function() {
+          widget.classList.remove('visible');
+          document.removeEventListener('click', clickHandler);
+        };
+        document.addEventListener('click', clickHandler);
+      }, 10);
+    }
+
+    // Функция для редактирования сообщения
+    function editMessage(messageElement, currentText) {
+      // Запоминаем старое содержимое и очищаем сообщение
+      const oldContent = messageElement.innerHTML;
+      const messageText = currentText || messageElement.childNodes[0].nodeValue.trim();
+  
+      // Сохраняем дочерние элементы (кроме текста)
+      const childElements = Array.from(messageElement.children);
+  
+      // Очищаем содержимое сообщения
+      messageElement.innerHTML = '';
+  
+      // Создаем поле ввода для редактирования
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = messageText;
+      input.style.width = '100%';
+      input.style.padding = '5px';
+      input.style.border = 'none';
+      input.style.borderRadius = '5px';
+      input.style.backgroundColor = 'white';
+      input.style.color = '#333';
+      input.style.marginBottom = '5px';
+  
+      // Добавляем кнопки для сохранения/отмены
+      const saveButton = document.createElement('button');
+      saveButton.textContent = 'Save';
+      saveButton.style.backgroundColor = '#4CAF50';
+      saveButton.style.color = 'white';
+      saveButton.style.border = 'none';
+      saveButton.style.borderRadius = '3px';
+      saveButton.style.padding = '3px 6px';
+      saveButton.style.marginRight = '5px';
+      saveButton.style.cursor = 'pointer';
+  
+      const cancelButton = document.createElement('button');
+      cancelButton.textContent = 'Cancel';
+      cancelButton.style.backgroundColor = '#F44336';
+      cancelButton.style.color = 'white';
+      cancelButton.style.border = 'none';
+      cancelButton.style.borderRadius = '3px';
+      cancelButton.style.padding = '3px 6px';
+      cancelButton.style.cursor = 'pointer';
+  
+      // Добавляем элементы в DOM
+      messageElement.appendChild(input);
+      messageElement.appendChild(saveButton);
+      messageElement.appendChild(cancelButton);
+  
+      // Ставим фокус на поле ввода
+      input.focus();
+  
+      // Обработчики для кнопок
+      saveButton.addEventListener('click', function() {
+        const newText = input.value.trim();
+        if (newText) {
+          // Восстанавливаем сообщение с новым текстом
+          messageElement.innerHTML = '';
+          messageElement.textContent = newText;
+      
+          // Восстанавливаем все дочерние элементы
+          childElements.forEach(el => {
+            messageElement.appendChild(el.cloneNode(true));
+          });
+      
+          // Переназначаем обработчики событий
+          attachEventHandlers(messageElement);
+        }
+      });
+  
+      cancelButton.addEventListener('click', function() {
+        // Отменяем редактирование, возвращая старое содержимое
+        messageElement.innerHTML = oldContent;
+        // Переназначаем обработчики событий
+        attachEventHandlers(messageElement);
+      });
+    }
+
+    // Функция для переназначения обработчиков событий
+    function attachEventHandlers(messageElement) {
+      const editButton = messageElement.querySelector('.edit-button');
+      const editWidget = messageElement.querySelector('.edit-widget');
+      const editBtn = messageElement.querySelector('.edit-btn');
+      const deleteBtn = messageElement.querySelector('.delete-btn');
+  
+      if (editButton && editWidget) {
+        editButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleWidget(editWidget);
+        });
+      }
+  
+      if (editBtn) {
+        editBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const messageText = messageElement.childNodes[0].nodeValue.trim();
+          editMessage(messageElement, messageText);
+          editWidget.classList.remove('visible');
+        });
+      }
+  
+      if (deleteBtn) {
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          messageElement.closest('.message-container').remove();
+        });
+      }
+    }
+
+        // Добавьте этот код в конец скрипта
+    document.addEventListener('DOMContentLoaded', function() {
+      // Добавляем карандаш к существующим сообщениям
+      const sentMessages = document.querySelectorAll('.message.sent');
+  
+      sentMessages.forEach(function(message) {
+        // Проверяем, есть ли уже кнопка редактирования
+        if (!message.querySelector('.edit-button')) {
+          // Создаем виджет с кнопками
+          const editWidget = document.createElement('div');
+          editWidget.className = 'edit-widget';
+      
+          const editBtn = document.createElement('button');
+          editBtn.className = 'widget-button edit-btn';
+          editBtn.textContent = 'Edit';
+      
+          const deleteBtn = document.createElement('button');
+          deleteBtn.className = 'widget-button delete-btn';
+          deleteBtn.textContent = 'Delete';
+      
+          editWidget.appendChild(editBtn);
+          editWidget.appendChild(deleteBtn);
+          message.appendChild(editWidget);
+      
+          // Добавляем кнопку-карандаш
+          const editButton = document.createElement('button');
+          editButton.className = 'edit-button';
+          editButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+            </svg>
+          `;
+      
+          message.appendChild(editButton);
+      
+          // Назначаем обработчики событий
+          attachEventHandlers(message);
+        }
+      });
+    });
+
+
+
+
+        // Добавьте этот код в раздел <script> в конце документа
+    document.addEventListener('DOMContentLoaded', function() {
+      // Обработчик для желтой кнопки status-circle
+      const statusCircle = document.querySelector('.status-circle');
+      const deleteChatWidget = document.getElementById('deleteChatWidget');
+  
+      if (statusCircle && deleteChatWidget) {
+        // Обработчик нажатия на желтую кнопку
+        statusCircle.addEventListener('click', function(e) {
+          e.stopPropagation(); // Предотвращаем всплытие события
+          toggleDeleteChatWidget(deleteChatWidget);
+        });
+    
+        // Обработчик для кнопки "Delete Chat"
+        const deleteButton = deleteChatWidget.querySelector('.delete-chat-btn');
+        if (deleteButton) {
+          deleteButton.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Здесь логика удаления чата
+            if (confirm('Are you sure you want to delete this chat?')) {
+              // Код для удаления чата
+              alert('Chat deleted');
+              // Можно добавить перенаправление на страницу со списком чатов
+              // window.location.href = 'chats.html';
+            }
+            // Скрываем виджет после действия
+            deleteChatWidget.classList.remove('visible');
+          });
+        }
+      }
+    });
+
+    // Функция для переключения видимости виджета удаления чата
+    function toggleDeleteChatWidget(widget) {
+      widget.classList.toggle('visible');
+  
+      // Закрываем все другие виджеты
+      document.querySelectorAll('.edit-widget.visible').forEach(function(w) {
+        w.classList.remove('visible');
+      });
+  
+      // Закрываем виджет при клике в любом месте страницы
+      setTimeout(function() {
+        const clickHandler = function() {
+          widget.classList.remove('visible');
+          document.removeEventListener('click', clickHandler);
+        };
+        document.addEventListener('click', clickHandler);
+      }, 10);
+    }
+
+
+        /**
+     * Функция для создания группового сообщения
+     * @param {string} text - текст сообщения
+     * @param {boolean} isSent - это наше сообщение?
+     * @param {boolean} isRead - прочитано ли сообщение
+     * @param {string} senderName - имя отправителя (только для чужих сообщений)
+     * @param {string} senderAvatar - путь к аватару отправителя (только для чужих сообщений)
+     */
+    function createGroupMessage(text, isSent, isRead = false, senderName = '', senderAvatar = '') {
+      // Создаем основные контейнеры
+      const container = document.createElement('div');
+      container.className = isSent 
+        ? 'message-container sent-container' 
+        : 'message-container received-container group-message';
+      
+      // Если сообщение от другого участника, добавляем информацию об отправителе
+      if (!isSent) {
+        const senderInfo = document.createElement('div');
+        senderInfo.className = 'sender-info';
+        
+        const avatar = document.createElement('img');
+        avatar.className = 'sender-avatar';
+        avatar.src = senderAvatar || 'https://placehold.co/30x30';
+        avatar.alt = senderName || 'User';
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'sender-name';
+        nameDiv.textContent = senderName || 'Unknown User';
+        
+        senderInfo.appendChild(avatar);
+        senderInfo.appendChild(nameDiv);
+        container.appendChild(senderInfo);
+      }
+      
+      // Создаем само сообщение
+      const messageDiv = document.createElement('div');
+      messageDiv.className = isSent ? 'message sent' : 'message received';
+      messageDiv.textContent = text;
+      
+      // Если это наше сообщение, добавляем инструменты редактирования
+      if (isSent) {
+        // Создаем виджет с кнопками
+        const editWidget = document.createElement('div');
+        editWidget.className = 'edit-widget';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'widget-button edit-btn';
+        editBtn.textContent = 'Edit';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'widget-button delete-btn';
+        deleteBtn.textContent = 'Delete';
+        
+        editWidget.appendChild(editBtn);
+        editWidget.appendChild(deleteBtn);
+        messageDiv.appendChild(editWidget);
+        
+        // Добавляем кнопку-карандаш
+        const editButton = document.createElement('button');
+        editButton.className = 'edit-button';
+        editButton.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
+          </svg>
+        `;
+        
+        // Обработчики событий для инструментов редактирования
+        editButton.addEventListener('click', function(e) {
+          e.stopPropagation();
+          toggleWidget(editWidget);
+        });
+        
+        editBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          editMessage(messageDiv, text);
+          editWidget.classList.remove('visible');
+        });
+        
+        deleteBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          container.remove();
+        });
+        
+        messageDiv.appendChild(editButton);
+      }
+      
+      // Создаем футер с временем и статусом прочтения
+      const footer = document.createElement('div');
+      footer.className = 'message-footer';
+      
+      // Добавляем текущее время
+      const time = document.createElement('span');
+      time.className = 'message-time';
+      const now = new Date();
+      time.textContent = now.getHours().toString().padStart(2, '0') + ':' + 
+                         now.getMinutes().toString().padStart(2, '0');
+      
+      // Если это наше сообщение, добавляем индикатор прочтения
+      if (isSent) {
+        const readStatus = document.createElement('span');
+        readStatus.className = isRead ? 'read-status read' : 'read-status unread';
+        
+        // Создаем SVG-иконку статуса
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('width', '16');
+        svg.setAttribute('height', '11');
+        svg.setAttribute('viewBox', '0 0 16 12');
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        if (isRead) {
+          path.setAttribute('d', 'M15.01 3.316l-.478-.372a.365.365 0 0 0-.51.063L8.666 9.879a.32.32 0 0 1-.484.033l-.358-.325a.319.319 0 0 0-.484.032l-.378.483a.418.418 0 0 0 .036.541l1.32 1.266c.143.14.361.125.484-.033l6.272-8.048a.366.366 0 0 0-.064-.512zm-4.1 0l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
+        } else {
+          path.setAttribute('d', 'M10.91 3.316l-.478-.372a.365.365 0 0 0-.51.063L4.566 9.879a.32.32 0 0 1-.484.033L1.891 7.769a.366.366 0 0 0-.515.006l-.423.433a.364.364 0 0 0 .006.514l3.258 3.185c.143.14.361.125.484-.033l6.272-8.048a.365.365 0 0 0-.063-.51z');
+        }
+        path.setAttribute('fill', 'currentColor');
+        
+        svg.appendChild(path);
+        readStatus.appendChild(svg);
+        footer.appendChild(readStatus);
+      }
+      
+      footer.appendChild(time);
+      messageDiv.appendChild(footer);
+      container.appendChild(messageDiv);
+      
+      return container;
+    }
+
+
+        // Функция для загрузки группового чата
+    function loadGroupChat(groupId) {
+      const chatWindow = document.querySelector('.chat-window');
+      const chatMessages = document.querySelector('.chat-messages');
+      
+      // Очищаем текущие сообщения
+      chatMessages.innerHTML = '';
+      
+      // Проверяем, есть ли у нас уже заголовок группы
+      let groupHeader = document.querySelector('.group-header');
+      
+      // Если заголовка нет, создаем его
+      if (!groupHeader) {
+        groupHeader = document.createElement('div');
+        groupHeader.className = 'group-header';
+        groupHeader.innerHTML = `
+          <div class="group-info">
+            <img src="https://placehold.co/50x50" alt="Group Image" class="group-avatar">
+            <div class="group-details">
+              <div class="group-name">AIT-24 Group</div>
+              <div class="group-members">15 members</div>
+            </div>
+          </div>
+        `;
+        
+        // Вставляем заголовок перед всеми другими элементами
+        chatWindow.insertBefore(groupHeader, chatWindow.firstChild);
+      }
+      
+      // Добавляем дату
+      const dateLabel = document.createElement('div');
+      dateLabel.className = 'date-label';
+      dateLabel.textContent = '14.04.2025';
+      chatMessages.appendChild(dateLabel);
+      
+      // Добавляем примеры групповых сообщений
+      const messages = [
+        {
+          text: "Hello everyone!",
+          isSent: true,
+          isRead: true
+        },
+        {
+          text: "Hi! How's the project going?",
+          isSent: false,
+          senderName: "Aktan",
+          senderAvatar: "https://placehold.co/30x30/orange/white"
+        },
+        {
+          text: "We need to finish the UI design by tomorrow.",
+          isSent: false,
+          senderName: "Dair",
+          senderAvatar: "https://placehold.co/30x30/green/white"
+        },
+        {
+          text: "I've completed the database schema.",
+          isSent: true,
+          isRead: false
+        },
+        {
+          text: "Great job! I'll review it later today.",
+          isSent: false,
+          senderName: "Eleonora",
+          senderAvatar: "https://placehold.co/30x30/purple/white"
+        }
+      ];
+      
+      // Добавляем сообщения в чат
+      messages.forEach(msg => {
+        const messageEl = createGroupMessage(
+          msg.text, 
+          msg.isSent, 
+          msg.isRead || false, 
+          msg.senderName || '', 
+          msg.senderAvatar || ''
+        );
+        chatMessages.appendChild(messageEl);
+      });
+      
+      // Прокручиваем чат вниз
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+    
+        // Обработчик для клика по чату в списке
+    document.addEventListener('DOMContentLoaded', function() {
+      const chatItems = document.querySelectorAll('.chat-item');
+      
+      chatItems.forEach(item => {
+        item.addEventListener('click', function() {
+          // Выделяем активный чат
+          document.querySelectorAll('.chat-item').forEach(chat => {
+            chat.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          // Проверяем тип чата
+          const chatType = this.getAttribute('data-chat-type');
+          const userId = this.getAttribute('data-user-id');
+          const userName = this.querySelector('.chat-item-name div').textContent.trim();
+          
+          // Очищаем все сообщения перед загрузкой нового чата
+          document.querySelector('.chat-messages').innerHTML = '';
+          
+          if (chatType === 'group') {
+            // Если это групповой чат, загружаем групповой интерфейс
+            const groupId = this.getAttribute('data-group-id');
+            loadGroupChat(groupId);
+          } else {
+            // Загружаем личный чат
+            loadDirectChat(userId, userName);
+          }
+        });
+      });
+    });
+    
+        // Обновленный обработчик отправки сообщений
+    document.querySelector('.send-button').addEventListener('click', function() {
+      const input = document.querySelector('.input-box input');
+      const text = input.value.trim();
+      
+      if (text) {
+        const messagesContainer = document.querySelector('.chat-messages');
+        
+        // Проверяем, находимся ли мы в групповом чате
+        const isGroupChat = document.querySelector('.group-header') !== null;
+        
+        // Создаем сообщение в соответствии с типом чата
+        const newMessage = isGroupChat 
+          ? createGroupMessage(text, true, false) 
+          : createMessage(text, true, false);
+          
+        messagesContainer.appendChild(newMessage);
+        
+        // Очищаем поле ввода
+        input.value = '';
+        
+        // Прокручиваем чат вниз
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
+    });
+
+
+        // Функция для загрузки личного чата
+    function loadDirectChat(userId, userName) {
+      const chatWindow = document.querySelector('.chat-window');
+      const chatMessages = document.querySelector('.chat-messages');
+      
+      // Очищаем текущие сообщения
+      chatMessages.innerHTML = '';
+      
+      // Удаляем заголовок группы, если он есть
+      const groupHeader = document.querySelector('.group-header');
+      if (groupHeader) {
+        groupHeader.remove();
+      }
+      
+      // Добавляем дату
+      const dateLabel = document.createElement('div');
+      dateLabel.className = 'date-label';
+      dateLabel.textContent = '14.04.2025';
+      chatMessages.appendChild(dateLabel);
+      
+      // Добавляем примеры личных сообщений
+      const messages = [
+        {
+          text: "Hello!",
+          isSent: false,
+          time: "14:01"
+        },
+        {
+          text: "Hi there! How are you?",
+          isSent: true,
+          isRead: true,
+          time: "14:02"
+        },
+        {
+          text: "I'm good, thanks for asking. Do you have a minute to talk about the project?",
+          isSent: false,
+          time: "14:03"
+        },
+        {
+          text: "Sure, what would you like to know?",
+          isSent: true,
+          isRead: false,
+          time: "14:05"
+        }
+      ];
+      
+      // Добавляем сообщения в чат
+      messages.forEach(msg => {
+        const messageEl = createMessage(
+          msg.text, 
+          msg.isSent, 
+          msg.isRead || false
+        );
+        chatMessages.appendChild(messageEl);
+      });
+      
+      // Прокручиваем чат вниз
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+  </script>
+</body>
+</html>
